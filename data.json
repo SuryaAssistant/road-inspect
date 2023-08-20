@@ -1,0 +1,157 @@
+{
+    "geoJSONFiles": [
+      {
+        "fileName": "lingkar_barat.geojson",
+        "roadName": "Jalan Lingkar Barat Kudus"
+      },
+      {
+        "fileName": "lingkar_utara.geojson",
+        "roadName": "Jalan Lingkar Utara Kudus"
+      },
+      {
+        "fileName": "kampus_umk.geojson",
+        "roadName": "Jalan Kampus UMK"
+      },
+      {
+        "fileName": "pemuda.geojson",
+        "roadName": "Jalan Pemuda"
+      },
+      {
+        "fileName": "pramuka.geojson",
+        "roadName": "Jalan Pramuka"
+      },
+      {
+        "fileName": "mejobo.geojson",
+        "roadName": "Jalan Mejobo"
+      },
+      {
+        "fileName": "krasak_pandean.geojson",
+        "roadName": "Jalan Krasak Pandean"
+      },
+      {
+        "fileName": "tanjung.geojson",
+        "roadName": "Jalan Tanjung"
+      },
+      {
+        "fileName": "johar.geojson",
+        "roadName": "Jalan Johar"
+      },
+      {
+        "fileName": "agus_salim.geojson",
+        "roadName": "Jalan Kyai Haji Agus Salim"
+      },
+      {
+        "fileName": "hos_cokroaminoto.geojson",
+        "roadName": "Jalan Haji Oemar Said Cokroaminoto"
+      },
+      {
+        "fileName": "boulevard_jati_wetan.geojson",
+        "roadName": "Jalan Boulevard Jati Wetan"
+      },
+      {
+        "fileName": "mayor_basuno.geojson",
+        "roadName": "Jalan Mayor Basuno"
+      },
+      {
+        "fileName": "niti_semito.geojson",
+        "roadName": "Jalan Niti Semito"
+      },
+      {
+        "fileName": "ronggolawe.geojson",
+        "roadName": "Jalan Ronggolawe"
+      },
+      {
+        "fileName": "subchan_ze.geojson",
+        "roadName": "Jalan HM Subchan ZE"
+      },
+      {
+        "fileName": "kyai_telingsing.geojson",
+        "roadName": "Jalan Kyai Telingsing"
+      },
+      {
+        "fileName": "kh_noorhadi.geojson",
+        "roadName": "Jalan KH Noorhadi"
+      },
+      {
+        "fileName": "kh_wahid_hasyim.geojson",
+        "roadName": "Jalan KH Wahid Hasyim"
+      },
+      {
+        "fileName": "dokter_wahidin.geojson",
+        "roadName": "Jalan Dokter Wahidin Sudiro Husodo"
+      },
+      {
+        "fileName": "mangga.geojson",
+        "roadName": "Jalan Mangga"
+      },
+      {
+        "fileName": "nuri.geojson",
+        "roadName": "Jalan Nuri"
+      },
+      {
+        "fileName": "dokter_ramelan.geojson",
+        "roadName": "Jalan Dokter Ramelan"
+      },
+      {
+        "fileName": "lukmonohadi.geojson",
+        "roadName": "Jalan Lukmonohadi"
+      },
+      {
+        "fileName": "museum_kretek.geojson",
+        "roadName": "Jalan Museum Kretek"
+      },
+      {
+        "fileName": "mulya.geojson",
+        "roadName": "Jalan Mulya"
+      },
+      {
+        "fileName": "getas_pejaten.geojson",
+        "roadName": "Jalan Getas Pejaten"
+      },
+      {
+        "fileName": "patimura_getas_loram.geojson",
+        "roadName": "Jalan Patimura (Ruas Getas - Loram)"
+      },
+      {
+        "fileName": "patimura_loram_gor.geojson",
+        "roadName": "Jalan Patimura (Ruas Loram - GOR)"
+      },
+      {
+        "fileName": "patimura_mlati.geojson",
+        "roadName": "Jalan Patimura (Ruas Mlati)"
+      },
+      {
+        "fileName": "gor.geojson",
+        "roadName": "Jalan GOR"
+      },
+      {
+        "fileName": "sentot_prawidorejo.geojson",
+        "roadName": "Jalan Sentot Prawidorejo (Tanjung Karang - Kretek)"
+      },
+      {
+        "fileName": "cipto_kusumo.geojson",
+        "roadName": "Jalan Cipto Kusumo"
+      },
+      {
+        "fileName": "budi_utomo_gulang.geojson",
+        "roadName": "Jalan Budi Utomo (Loram - Gulang)"
+      },
+      {
+        "fileName": "budi_utomo_jepang.geojson",
+        "roadName": "Jalan Budi Utomo (Jepang - Megawon)"
+      },
+      {
+        "fileName": "suryo_kusumo.geojson",
+        "roadName": "Jalan Suryo Kusumo"
+      },
+      {
+        "fileName": "pasuruhanlor_kencing.geojson",
+        "roadName": "Ruas Pasuruhan Lor - Kencing"
+      },
+      {
+        "fileName": "sempalan_pasuruhankidul.geojson",
+        "roadName": "Ruas Sempalan - Pasuruhan Kidul"
+      }
+    ]
+  }
+  
