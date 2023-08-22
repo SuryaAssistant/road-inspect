@@ -7,7 +7,7 @@
     <meta content="" name="description">
     <meta content="" name="keywords">
 
-    <title>Kudus Road Quality</title>
+    <title>Road Inspect</title>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
@@ -50,6 +50,8 @@
             height: 20px;
             margin-right: 5px;
         }
+
+        
     </style>
     <!-- Socket IO Websocket -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
@@ -68,10 +70,12 @@
             <div class="col">
                 <div class="row">
                     <div class="col">
-                        <button type="button" class="btn btn-brand navbar-brand"><b>Road Inspect</b></button>
+                        <button type="button" class="btn btn-brand navbar-brand" style="color: #132146 !important" disabled>Road Inspect</button>
                     </div>
                     <div class="col" style="text-align: right;">
-                        <button class="btn btn-brand" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><b>More</b></button>
+                        <button class="btn btn-more navbar-brand" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path></svg>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -172,8 +176,8 @@
         </div>
         <div class="offcanvas-footer">
             <!-- Footer -->
-            <div class="row" style="text-align:left;padding-top:20px; background-color: #000221;">
-                <div class="col">
+            <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                <div class="col" style="text-align:left;padding-top:20px; background-color: #000221;">
                     <div class="row" style="padding-bottom : 20px">
                         <div class="col">
                             <span class="whitecolor" style="font-family: Verdana, sans-serif;">Road Inspect</span>
@@ -189,17 +193,21 @@
         </div>
     </div>
 
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
     <script>
         const cityCoords = [-6.8045, 110.8431];    
-        const map = L.map('map').setView(cityCoords, 13);
+        const map = L.map('map', {zoomControl: false}).setView(cityCoords, 13);
     
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-
+        
+        L.control.zoom({
+            position: 'bottomright'
+        }).addTo(map);
 
         // ========================================================================================
         // Jalan Nasional
@@ -213,7 +221,8 @@
             L.geoJSON(data, {
             style: {
                 color: 'blue', // Change the color of the boundary line
-                weight: 4      // Adjust the line weight
+                weight: 4,      // Adjust the line weight
+                opacity: 0.5
             }
             }).addTo(map);
         });
@@ -227,7 +236,8 @@
             const roadLayer = L.geoJSON(data, {
                 style: {
                     color: 'blue', // Change the color of the road lines
-                    weight: 4      // Adjust the line weight
+                    weight: 4,   // Adjust the line weight
+                    opacity: 0.5
                 }
             }).addTo(map);
         });
