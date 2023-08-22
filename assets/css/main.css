@@ -27,10 +27,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-brand{
-    background-color: #132146 !important;
-    color: #efefef !important;
+    color: #132146 !important;
+    background-color: transparent !important;
     border-radius: 25px !important;
 }
+
+
+.btn-more{
+    background-color: #132146 !important;
+    color: #efefef !important;
+    opacity: 0.8 !important;
+}
+
 
 .btn-primary{
     background-color: #132146 !important;
