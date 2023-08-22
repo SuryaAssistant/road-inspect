@@ -26,12 +26,18 @@ h1, h2, h3, h4, h5, h6 {
     background-color: #2B5198 !important;
 }
 
+.btn-brand{
+    background-color: #132146 !important;
+    color: #efefef !important;
+    border-radius: 25px !important;
+}
+
 .btn-primary{
     background-color: #132146 !important;
     color: #efefef !important;
     border-color: #efefef !important;
     margin-right: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .btn-secondary{
@@ -103,6 +109,10 @@ h1, h2, h3, h4, h5, h6 {
 /*--------------------------------------------------------------
 # Navbar
 --------------------------------------------------------------*/
+nav{
+    background-color: transparent !important;
+    background: transparent !important;
+}
 .navbar-brand{
     color:#efefef !important;
     font-size: 14px !important;
@@ -110,12 +120,29 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .nav-item{
-    color: #efefef !important;
+    color: #132146 !important;
     font-size: 14px !important;
     font-family: 'Open Sans', sans-serif;
     padding-left: 10px;
     padding-right: 10px;
 }
+         
+.navbar-toggler {
+    border-color: #132146 !important;
+}
+    
+.navbar-toggler-icon {
+    background-image: url(
+    "data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(19, 33, 70, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+
+/*--------------------------------------------------------------
+# Modal
+--------------------------------------------------------------*/
+.modal-body p {
+    word-wrap: break-word;
+}
+
 /*--------------------------------------------------------------
 # Section
 --------------------------------------------------------------*/
@@ -138,11 +165,10 @@ section {
 
 .section-title {
     text-align: left;
-    margin-right: 20px;
 }
 
 .section-title h1 {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     position: relative;
     color: #132146;
@@ -165,7 +191,6 @@ section {
     text-align: left;
     position: relative;
     color: #efefef;
-    margin-right: 20px;
     padding-bottom: 20px;
 }
 

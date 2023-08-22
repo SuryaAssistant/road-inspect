@@ -1,8 +1,6 @@
 // =========================================================================================
 // Blockchain Configuration
 // =========================================================================================
-let blockchainIndex = "b48830c9428c8ea62a5d7a3f7c130e077ad1a21cad6b655d79b8d365c544b6c6";
-
 let clickedLatitude;
 let clickedLongitude;
 let clickedRoad;
@@ -38,8 +36,8 @@ function lapor(){
     // Create special JSON format
     productJSON = "{'type':'report','issuer':'"+issuer+"','roadName':'"+clickedRoad+"','lat':'"+clickedLatitude+"','long':'"+clickedLongitude+"','desc':'"+lapor_desc+"'}";
     
-    //Connect MQTT for 
-    MQTTconnect();
+    //Connect Websocket 
+    wsConnect();
 }
 
 // =========================================================================================
@@ -59,8 +57,8 @@ function perbaikan(){
     // Create special JSON format
     productJSON = "{'type':'fixing','issuer':'"+issuer+"','ticket':'"+lapor_tiket+"','roadName':'"+lapor_jalan+"','lat':'"+lapor_lat+"','long':'"+lapor_long+"','desc':'"+lapor_desc+"'}";
     
-    //Connect MQTT for 
-    MQTTconnect();
+    //Connect websocket 
+    wsConnect();
 }
 
 // =========================================================================================
@@ -80,28 +78,22 @@ function selesaiPerbaikan(){
     // Create special JSON format
     productJSON = "{'type':'finish','issuer':'"+issuer+"','ticket':'"+lapor_tiket+"','roadName':'"+lapor_jalan+"','lat':'"+lapor_lat+"','long':'"+lapor_long+"','desc':'"+lapor_desc+"'}";
     
-    //Connect MQTT for 
-    MQTTconnect();
+    //Connect websocket 
+    wsConnect();
 }
 
 
 //======================================================================
-// MQTT Function
+// Websocket Function
 //======================================================================
-// When user is connect to mqtt, subscribe randomized topic and send 
-function onConnect(){
+
+// connect to websocket
+function wsConnect(){
     document.getElementById("lapor_jalan").innerHTML=``;
 
-    // Subscribe topic
-    mqtt.subscribe(topic);
-
-    // Send submit request to gateway
-    // format : submit_special/tag_index/data/return_topic
-    let mqtt_msg = "data/" + productJSON + '/'+ returnTopic + '/' + blockchainIndex;
-    
-    let product_msg = new Paho.MQTT.Message(mqtt_msg);
-    product_msg.destinationName = gatewayId + "/submit" ;
-    mqtt.send(product_msg);
+    // Send a message to the server
+    let inputMessage = "data/" + productJSON + '/'+ clientSocket + '/' + blockchainIndex;
+    socket.emit('submit', inputMessage);
 
     // change display
     document.getElementById("lapor_jalan").innerHTML+=`
@@ -112,36 +104,16 @@ function onConnect(){
     `;
 }
 
-function onFailure(){
-    console.log("Failed to connect");
-    setTimeout(MQTTconnect, reconnectTimeout);
-}
 
 
-// If gateway give response, display it
-function onMessageArrived(msg){
-    let IOTAResponse=msg.payloadString;
-
+socket.on(clientSocket, (msg) => {
+    let response=msg;
     // show the data in html
     document.getElementById("lapor_jalan").innerHTML = `
         <div class="row primecolor">
             <p>Laporan berhasil diunggah ke blockchain </p>
-            <p>Kode ticket : <a href="https://explorer.iota.org/devnet/indexed/${IOTAResponse}">${IOTAResponse}</a></p>
+            <p>Kode ticket : <a href="https://explorer.iota.org/devnet/indexed/${response}">${response}</a></p>
         </div>
     `;
-}
-
-// connect to mqtt
-function MQTTconnect(){
-    console.log("connecting MQTT");
-    mqtt = new Paho.MQTT.Client(host,port,"clientjs");
-
-    var options = {
-        timeout: 3,
-        onSuccess: onConnect,
-        onFailure: onFailure,
-    };
-
-    mqtt.onMessageArrived = onMessageArrived;
-    mqtt.connect(options);
-}
+//    socket.disconnect();
+});
