@@ -102,7 +102,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="section-title">
-                    <h1 class="modal-title" id="nama_jalan" style="text-align: center; padding-top:10px;">Jalan in aja dulu</h1>
+                    <h1 class="modal-title" id="nama_jalan">Jalan in aja dulu</h1>
                 </div>
                 <div class="modal-body" id="lapor_jalan">
                     <p>This is the content of the modal.</p>
@@ -130,11 +130,11 @@
                         </div>
                         <div class="row">
                             <div class="col-8">
-                                <input class="form-control" id="nomor_tiket" name="tiket" placeholder="Masukkan nomor tiket">
+                                <input class="form-control" id="ticket_id" name="tiket" placeholder="Masukkan nomor tiket">
                             </div>
                             <div class="col-4">
                                 <div class="row">
-                                    <button class="btn btn-card-inline" type="button">
+                                    <button class="btn btn-card-inline" type="button" onclick="search()">
                                         <i class='bx bx-search'></i> Cari
                                     </button>
                                 </div>
@@ -198,6 +198,17 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
     <script>
+        function search(){
+            event.preventDefault();
+            const ticketID = document.getElementById('ticket_id').value;
+            const url = "./laporan/info.html?tiket=" + ticketID; 
+
+            window.open(url, '_blank'); // Open URL in a new tab
+        }
+    </script>
+
+
+    <script>
         const cityCoords = [-6.8045, 110.8431];    
         const map = L.map('map', {zoomControl: false}).setView(cityCoords, 13);
     
@@ -250,13 +261,13 @@
         .then(response => response.json())
         .then(jsonData => {
             jsonData.geoJSONFiles.forEach(fileInfo => {
-                fetch(`jalan_kabupaten/${fileInfo.fileName}`)
+                fetch(`road_list/${fileInfo.fileName}`)
                 .then(response => response.json())
                 .then(data => {
                     const roadLayer = L.geoJSON(data, {
                         style: {
                             color: 'blue', // Change the color of the road lines
-                            weight: 4,      // Adjust the line weight
+                            weight: 5,      // Adjust the line weight
                             opacity:0.5
                         }
                     }).addTo(map);
@@ -302,7 +313,7 @@
                         document.getElementById('footer_button').innerHTML = `
                         <div class="mb-3">
                             <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-success mb-3" onclick="lapor()">Laporkan</button>
+                            <button type="button" class="btn btn-success mb-3" onclick="report()">Laporkan</button>
                         </div>
                         `;
                     });

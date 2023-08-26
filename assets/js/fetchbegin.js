@@ -47,6 +47,30 @@ function replaceJSON(fromJSON, toJSON, value){
     }
 }
 
+// check if there is a cache
+const cachedData = localStorage.getItem('dataBlockchain');
+let blockchainFullData = [];
+let cachedTimestamp = 0;
+
+if (cachedData) {
+    // convert cache to JSON
+    console.log("cached data = " + cachedData);
+    blockchainFullData = JSON.parse(localStorage['dataBlockchain']);
+    if(blockchainFullData[0] == undefined){
+        console.log("undefined");
+    }
+    else{
+        cachedTimestamp = blockchainFullData[0][1].message.timestamp;
+        // show data first   
+    }
+} 
+
+//======================================================================
+// Websocket Configuration
+//======================================================================
+// create random number for socket event
+const randomNumber = Math.random() * 10000000;
+const clientSocket = String(Math.floor(randomNumber));
 
 //======================================================================
 // Websocket Function
@@ -58,19 +82,33 @@ let fetch_begin = false;
 socket.on('connect', () => {
     if(fetch_begin == false){
         // Send a message to the server
-        let inputMessage = "tag_msg_json/" + blockchainIndex + '/'+ clientSocket;
+        let inputMessage = "tag_msg_filter/" + blockchainIndex + '/'+ clientSocket + '/' + '>:' + cachedTimestamp + '/' + '"message"' + '/' + '"timestamp"';
         socket.emit('submit', inputMessage);
     }
 });
-
 
 
 // Event listener for receiving messages from the server
 socket.on(clientSocket, (msg) => {
     if(fetch_begin == false){
         let fullMsg = msg.replace(/'/g, '"');
-        let blockchainFullData = JSON.parse(fullMsg);
-    
+        console.log(fullMsg);
+        let newReportedData;
+        if(fullMsg != '[]'){
+            newReportedData = JSON.parse(fullMsg);
+            let lastLength = blockchainFullData.length;
+
+            // add new data to last cached data
+            for(let i=0; i<newReportedData.length; i++){
+                blockchainFullData[lastLength + i] = newReportedData[i];
+            }
+
+            blockchainFullData.sort(compareByTimestamp);
+
+            // save newest data
+            localStorage['dataBlockchain'] = JSON.stringify(blockchainFullData);
+        }
+
         // Copy JSON with 'report' to filteredBlockchain
         let filteredBlockchain = []
         copyJSON(blockchainFullData, filteredBlockchain, 'report', 1)
@@ -89,7 +127,7 @@ socket.on(clientSocket, (msg) => {
     
         // sort JSON
         blockchainReport.sort(compareByTimestamp);
-    
+
         // show coordinate on map
         for(let i=0; i<blockchainReport.length; i++){
             let getLatitude = blockchainReport[i][1].message.data.lat;
@@ -111,28 +149,28 @@ socket.on(clientSocket, (msg) => {
                 if(blockchainReport[i][1].message.data.type == 'report'){
                     document.getElementById('lapor_jalan').innerHTML = `
                     <div class="col padding-left-right" id="blockchain_data">
-                    <div class="row align-items-center" >
+                    <div class="row align-items-center">
                         <div class="mx-auto">
                             <div class="row" style="text-align:center">
                             <span class="badge bg-danger">Jalan Rusak</span>
                             </div>
-                            <p class="primecolor" style="padding-top:10px">
-                            <span id="laporTiket">${blockchainReport[i][0].msgID}</span>
+                            <p class="primecolor" style="text-align:center">
+                            <span>Kode tiket : </span><span id="laporTiket" class="modal-tiket">${blockchainReport[i][0].msgID}</span>
                             </p>
                             <!-- Latitude -->
                             <div class="mb-3">
-                                <label class="form-label form-key primecolor">Latitude</label>
-                                <input class="form-control" id="laporLat" value="${getLatitude}" disabled>
+                                <label class="form-label form-key primecolor modal-form">Latitude</label>
+                                <input class="form-control modal-form" id="laporLat" value="${getLatitude}" disabled>
                             </div>
                             <!-- Longitude -->
                             <div class="mb-3">
-                                <label class="form-label form-key primecolor">Longitude</label>
-                                <input class="form-control" id="laporLong" value="${getLongitude}" disabled>
+                                <label class="form-label form-key primecolor modal-form">Longitude</label>
+                                <input class="form-control modal-form" id="laporLong" value="${getLongitude}" disabled>
                             </div>
                             <!-- Deskripsi -->
                             <div class="mb-3">
-                                <label class="form-label form-key">Deskripsi perbaikan</label>
-                                <textarea class="form-control" id="laporDesc" rows="3" placeholder="Diperbaiki oleh ...Perbaikan dilaksanakan tanggal ...Biaya anggaran perbaikan sebesar Rp..."></textarea>
+                                <label class="form-label form-key modal-form">Deskripsi perbaikan</label>
+                                <textarea class="form-control modal-form" id="laporDesc" rows="3" placeholder="Tuliskan kerusakan jalan di sini ..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -142,7 +180,7 @@ socket.on(clientSocket, (msg) => {
                     document.getElementById('footer_button').innerHTML = `
                     <div class="mb-3">
                         <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-success mb-3" onclick="perbaikan()">Laporkan Perbaikan</button>
+                        <button type="button" class="btn btn-success mb-3" onclick="report_fixing()">Laporkan Perbaikan</button>
                     </div>
                     `;
                 }
@@ -155,23 +193,23 @@ socket.on(clientSocket, (msg) => {
                             <div class="row" style="text-align:center">
                             <span class="badge bg-warning">Sedang Dalam Perbaikan</span>
                             </div>
-                            <p class="primecolor" style="padding-top:10px">
-                            <span id="laporTiket">${blockchainReport[i][0].msgID}</span>
+                            <p class="primecolor" style="text-align:center">
+                            <span id="laporTiket" class="modal-tiket">${blockchainReport[i][0].msgID}</span>
                             </p>
                             <!-- Latitude -->
                             <div class="mb-3">
-                                <label class="form-label form-key primecolor">Latitude</label>
-                                <input class="form-control" id="laporLat" value="${getLatitude}" disabled>
+                                <label class="form-label form-key primecolor modal-form">Latitude</label>
+                                <input class="form-control modal-form" id="laporLat" value="${getLatitude}" disabled>
                             </div>
                             <!-- Longitude -->
                             <div class="mb-3">
-                                <label class="form-label form-key primecolor">Longitude</label>
-                                <input class="form-control" id="laporLong" value="${getLongitude}" disabled>
+                                <label class="form-label form-key primecolor modal-form">Longitude</label>
+                                <input class="form-control modal-form" id="laporLong" value="${getLongitude}" disabled>
                             </div>
                             <!-- Deskripsi -->
                             <div class="mb-3">
-                                <label class="form-label form-key">Deskripsi perbaikan</label>
-                                <textarea class="form-control" id="laporDesc" rows="3" placeholder="Diperbaiki oleh ...Perbaikan dilaksanakan tanggal ...Biaya anggaran perbaikan sebesar Rp..."></textarea>
+                                <label class="form-label form-key modal-form">Deskripsi perbaikan</label>
+                                <textarea class="form-control modal-form" id="laporDesc" rows="3" placeholder="Tuliskan apa saja yang diperbaiki ..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -181,7 +219,7 @@ socket.on(clientSocket, (msg) => {
                     document.getElementById('footer_button').innerHTML = `
                     <div class="mb-3">
                         <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-success mb-3" onclick="selesaiPerbaikan()">Perbaikan Selesai</button>
+                        <button type="button" class="btn btn-success mb-3" onclick="report_finish()">Perbaikan Selesai</button>
                     </div>
                     `;
                 }

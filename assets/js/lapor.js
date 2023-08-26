@@ -30,11 +30,11 @@ fetch('https://api.ipify.org?format=json')
 // Description:
 // Get road properties and then call mqtt connect
 // =========================================================================================
-function lapor(){
-    let lapor_desc = document.getElementById('laporDesc').value;
+function report(){
+    let reportDescription = document.getElementById('laporDesc').value;
 
     // Create special JSON format
-    productJSON = "{'type':'report','issuer':'"+issuer+"','roadName':'"+clickedRoad+"','lat':'"+clickedLatitude+"','long':'"+clickedLongitude+"','desc':'"+lapor_desc+"'}";
+    productJSON = "{'type':'report','issuer':'"+issuer+"','roadName':'"+clickedRoad+"','lat':'"+clickedLatitude+"','long':'"+clickedLongitude+"','desc':'"+reportDescription+"'}";
     
     //Connect Websocket 
     wsConnect();
@@ -47,15 +47,15 @@ function lapor(){
 // Get road properties and then call mqtt connect
 // =========================================================================================
 
-function perbaikan(){
-    let lapor_jalan = document.getElementById('nama_jalan').textContent;
-    let lapor_tiket = document.getElementById('laporTiket').textContent;
-    let lapor_lat = document.getElementById('laporLat').value;
-    let lapor_long = document.getElementById('laporLong').value;
-    let lapor_desc = document.getElementById('laporDesc').value;
+function report_fixing(){
+    let roadName = document.getElementById('nama_jalan').textContent;
+    let mainTicket = document.getElementById('laporTiket').textContent;
+    let reportLat = document.getElementById('laporLat').value;
+    let reportLong = document.getElementById('laporLong').value;
+    let reportDescription = document.getElementById('laporDesc').value;
 
     // Create special JSON format
-    productJSON = "{'type':'fixing','issuer':'"+issuer+"','ticket':'"+lapor_tiket+"','roadName':'"+lapor_jalan+"','lat':'"+lapor_lat+"','long':'"+lapor_long+"','desc':'"+lapor_desc+"'}";
+    productJSON = "{'type':'fixing','issuer':'"+issuer+"','ticket':'"+mainTicket+"','roadName':'"+roadName+"','lat':'"+reportLat+"','long':'"+reportLong+"','desc':'"+reportDescription+"'}";
     
     //Connect websocket 
     wsConnect();
@@ -68,15 +68,15 @@ function perbaikan(){
 // Get road properties and then call mqtt connect
 // =========================================================================================
 
-function selesaiPerbaikan(){
-    let lapor_jalan = document.getElementById('nama_jalan').textContent;
-    let lapor_tiket = document.getElementById('laporTiket').textContent;
-    let lapor_lat = document.getElementById('laporLat').value;
-    let lapor_long = document.getElementById('laporLong').value;
-    let lapor_desc = document.getElementById('laporDesc').value;
+function report_finish(){
+    let roadName = document.getElementById('nama_jalan').textContent;
+    let mainTicket = document.getElementById('laporTiket').textContent;
+    let reportLat = document.getElementById('laporLat').value;
+    let reportLong = document.getElementById('laporLong').value;
+    let reportDescription = document.getElementById('laporDesc').value;
 
     // Create special JSON format
-    productJSON = "{'type':'finish','issuer':'"+issuer+"','ticket':'"+lapor_tiket+"','roadName':'"+lapor_jalan+"','lat':'"+lapor_lat+"','long':'"+lapor_long+"','desc':'"+lapor_desc+"'}";
+    productJSON = "{'type':'finish','issuer':'"+issuer+"','ticket':'"+mainTicket+"','roadName':'"+roadName+"','lat':'"+reportLat+"','long':'"+reportLong+"','desc':'"+reportDescription+"'}";
     
     //Connect websocket 
     wsConnect();
@@ -112,7 +112,7 @@ socket.on(clientSocket, (msg) => {
     document.getElementById("lapor_jalan").innerHTML = `
         <div class="row primecolor">
             <p>Laporan berhasil diunggah ke blockchain </p>
-            <p>Kode ticket : <a href="https://explorer.iota.org/devnet/indexed/${response}">${response}</a></p>
+            <p>Kode ticket : <a href="./laporan/info.html?tiket=${response}">${response}</a></p>
         </div>
     `;
 //    socket.disconnect();
