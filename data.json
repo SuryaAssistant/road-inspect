@@ -151,6 +151,58 @@
       {
         "fileName": "sempalan_pasuruhankidul.geojson",
         "roadName": "Ruas Sempalan - Pasuruhan Kidul"
+      },
+      {
+        "fileName": "r_agil_kusumadya.geojson",
+        "roadName": "Jalan R. Agil Kusumadya"
+      },
+      {
+        "fileName": "ahmad_yani.geojson",
+        "roadName": "Jalan Jendral Ahmad Yani"
+      },
+      {
+        "fileName": "sudirman.geojson",
+        "roadName": "Jalan Jendral Sudirman"
+      },
+      {
+        "fileName": "kudus_pati.geojson",
+        "roadName": "Jalan Raya Kudus - Pati"
+      },
+      {
+        "fileName": "lingkar_timur.geojson",
+        "roadName": "Jalan Lingkar Timur Kudus"
+      },
+      {
+        "fileName": "sunan_kudus.geojson",
+        "roadName": "Jalan Sunan Kudus"
+      },
+      {
+        "fileName": "kudus_jepara.geojson",
+        "roadName": "Jalan Raya Kudus - Jepara"
+      },
+      {
+        "fileName": "demak_kudus.geojson",
+        "roadName": "Jalan Raya Demak - Kudus"
+      },
+      {
+        "fileName": "kudus_purwodadi.geojson",
+        "roadName": "Jalan Raya Kudus - Purwodadi"
+      },
+      {
+        "fileName": "sunan_muria.geojson",
+        "roadName": "Jalan Sunan Muria"
+      },
+      {
+        "fileName": "sosrokartono.geojson",
+        "roadName": "Jalan Sosrokartono"
+      },
+      {
+        "fileName": "kudus_colo.geojson",
+        "roadName": "Jalan Raya Kudus - Colo"
+      },
+      {
+        "fileName": "asnawi.geojson",
+        "roadName": "Jalan KH. R. Asnawi"
       }
     ]
   }
