@@ -86,6 +86,7 @@
     <!-- Map here -->
     <div id="map"></div>
 
+    <!-- Synchronization alert -->
     <div id="synchronization-alert" class="justify-content-center align-items-center" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; display: flex;">
         <div id="alert" class="alert alert-info">
            <div class="d-flex align-items-center">
@@ -93,6 +94,15 @@
                  <span class="sr-only"></span>
               </div>
               <span>&nbsp;&nbsp;&nbsp;Sinkronisasi Data . . .</span>
+           </div>
+        </div>
+    </div>
+
+    <!-- Show position button -->
+    <div id="show-position" class="justify-content-center align-items-center" style="position: absolute; top: 60px; left: 20px; z-index: 1000; display: flex;" onclick="showMyPosition()">
+        <div class="alert alert-light" style="border-radius: 100px; padding:10px">
+           <div class="d-flex align-items-center">
+            <i class='bx bxs-map' style="color:red; font-size: 30px;"></i>
            </div>
         </div>
      </div>
@@ -114,10 +124,10 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="section-title">
-                    <h1 class="modal-title" id="nama_jalan">Jalan in aja dulu</h1>
+                    <h1 class="modal-title" id="nama_jalan">Media pelaporan dan pemantauan kualitas jalan berbasis blockchain</h1>
                 </div>
                 <div class="modal-body" id="lapor_jalan">
-                    <p>This is the content of the modal.</p>
+                    <p></p>
                 </div>
                 <div class="modal-footer" id="footer_button">
                 </div>
@@ -229,7 +239,8 @@
     <script>
         const cityCoords = [-6.8045, 110.8431];    
         const map = L.map('map', {zoomControl: false}).setView(cityCoords, 13);
-    
+        var currentMarker = null; // Variable to keep track of the current marker
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
@@ -278,6 +289,7 @@
         // ========================================================================================
         // Jalan kabupaten/Kota
         // ========================================================================================
+
         // Load and add GeoJSON layers
         fetch('data.json')
         .then(response => response.json())
@@ -296,48 +308,24 @@
 
                     // Add a click event listener to the road layer
                     roadLayer.on('click', function (event) {
-                        const clickedLatLng = event.latlng;
-                        // save value on index.js
-                        clickedLatitude = clickedLatLng.lat;
-                        clickedLongitude = clickedLatLng.lng;
 
-                        // Save nama jalan
+                        // Remove the previous marker, if exists
+                        if (currentMarker) {
+                            map.removeLayer(currentMarker);
+                        }
+
+                        // throw position to lapor.js
+                        clickedLatitude = event.latlng.lat;
+                        clickedLongitude = event.latlng.lng;
                         clickedRoad = fileInfo.roadName;
-                        // update row
-                        $('#modalLaporRusak').modal('show');
-                        document.getElementById('nama_jalan').textContent = fileInfo.roadName;
 
+                        // Show marker first and ask user. 
+                        // Is user want to report or not
+                        // If user want to report. call reportRoad().
+                        var popupContent = '<button type="button" class="btn btn-danger" onclick="reportRoad()">Lapor Jalan Rusak</button>'
 
-                        document.getElementById('lapor_jalan').innerHTML = `
-                        <div class="col padding-left-right" id="blockchain_data">
-                            <div class="row align-items-center" >
-                                <div class="mx-auto">
-                                    <!-- Latitude -->
-                                    <div class="mb-3">
-                                        <label class="form-label form-key primecolor">Latitude</label>
-                                        <input class="form-control" id="laporLat" value="${clickedLatitude}" disabled>
-                                    </div>
-                                    <!-- Longitude -->
-                                    <div class="mb-3">
-                                        <label class="form-label form-key primecolor">Longitude</label>
-                                        <input class="form-control" id="laporLong" value="${clickedLongitude}" disabled>
-                                    </div>
-                                    <!-- Deskripsi -->
-                                    <div class="mb-3">
-                                        <label class="form-label form-key">Deskripsi kerusakan</label>
-                                        <textarea class="form-control" id="laporDesc" rows="3" placeholder="Isikan deskripsi kerusakan jalan di sini"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        `;
-
-                        document.getElementById('footer_button').innerHTML = `
-                        <div class="mb-3">
-                            <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-success mb-3" onclick="report()">Laporkan</button>
-                        </div>
-                        `;
+                        currentMarker = L.marker(event.latlng).addTo(map)
+                            .bindPopup(popupContent).openPopup();
                     });
 
                     // Update road line width when zoom changes
@@ -348,6 +336,40 @@
                 });
             });
         });
+
+
+
+
+        // Show user Location
+        function onLocationFound(e) {
+            var radius = e.accuracy / 2;
+
+            // Clear previous circles
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.Circle) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            // Show new circle area where user is on
+            L.circle(e.latlng, radius).addTo(map);
+        }
+
+        function onLocationError(e) {
+            alert(e.message);
+        }
+
+        function updateLocation() {
+            map.locate({ setView: true, maxZoom: 13 });
+        }
+
+        map.on('locationfound', onLocationFound);
+        map.on('locationerror', onLocationError);
+
+        function showMyPosition(){
+            updateLocation();
+        }
+
     </script>
 </body>
 </html>
