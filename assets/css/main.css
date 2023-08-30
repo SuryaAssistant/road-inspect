@@ -8,7 +8,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .primecolor{
-    color: #132146;
+    color: #004080;
+}
+
+.textprimecolor{
+    color:#272829;
 }
 
 .secondarycolor{
@@ -20,65 +24,54 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .primebackground{
-    background-color: #132146 !important;
+    background-color: #004080 !important;
 }
 .secondarybackground{
     background-color: #2B5198 !important;
 }
 
-.btn-brand{
-    color: #132146 !important;
-    background-color: transparent !important;
-    border-radius: 25px !important;
-}
 
-
-.btn-more{
-    background-color: #132146 !important;
-    color: #efefef !important;
-    opacity: 0.8 !important;
-}
-
-
+/*--------------------------------------------------------------
+# Button
+--------------------------------------------------------------*/
 .btn-primary{
-    background-color: #132146 !important;
+    background-color: #004080 !important;
     color: #efefef !important;
     border-color: #efefef !important;
-    margin-right: 10px;
-    margin-bottom: 10px;
 }
 
 .btn-secondary{
     background-color: transparent !important;
-    color: #132146 !important;
-    border-color: #132146 !important;
-    margin-right: 20px;
-    margin-bottom: 20px;
+    color: #004080 !important;
+    border-color: #004080 !important;
 }
+
+
+
+.btn-more{
+    background-color: #004080 !important;
+    border-color: #004080 !important;
+    color: #efefef !important;
+}
+
 .hr-title{
     margin-left: 30% !important; 
     margin-right: 30% !important; 
     height: 5px !important;
     border-radius: 10px !important;
-    border-color: #132146 !important;
-    background-color: #132146 !important;
-    border-color: #132146 !important;
+    border-color: #004080 !important;
+    background-color: #004080 !important;
+    border-color: #004080 !important;
     opacity: 1 !important;
     margin-top: 20px !important;
     margin-bottom: 40px !important;
 }
 
-.form-key{
-    font-size: 16px;
-    color: #020230;
-    font-weight: bold;
-}
-
 .btn-card-inline{
-    background-color: #020230 !important;
+    background-color: #004080 !important;
     color: #efefef !important;
     font-weight: bold !important;
-    border-color: #020230 !important;
+    border-color: #004080 !important;
     margin-right: 10px;
     margin-bottom: 20px;
     border-radius: 10px !important;
@@ -121,10 +114,13 @@ nav{
     background-color: transparent !important;
     background: transparent !important;
 }
-.navbar-brand{
-    color:#efefef !important;
+
+.nav-title{
+    color: #004080 !important;
+    opacity: 1 !important;
     font-size: 14px !important;
     font-family: 'Open Sans', sans-serif;
+    background-color: transparent !important;
 }
 
 .nav-item{
@@ -136,13 +132,33 @@ nav{
 }
          
 .navbar-toggler {
-    border-color: #132146 !important;
+    border-color: #004080 !important;
 }
     
 .navbar-toggler-icon {
     background-image: url(
     "data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(19, 33, 70, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
 }
+
+/*--------------------------------------------------------------
+# Loading
+--------------------------------------------------------------*/
+.sync-alert{
+    color:#ffffff !important; 
+    background-color:#A52447 !important; 
+    border-color:#A52447 !important; 
+    border-radius: 50px !important; 
+    padding:7px !important; 
+    padding-left:10px !important; 
+    padding-right: 10px !important; 
+    font-size:14px !important;
+}
+
+.sync-spinner{
+    width:1rem !important;
+    height:1rem !important;
+}
+
 
 /*--------------------------------------------------------------
 # Modal
@@ -155,14 +171,17 @@ nav{
     font-size:12px;
 }
 
-.modal-form {
-    font-size:14px
-}
-
 .modal-title {
-    text-align: center; 
+    color: #424656 !important;
+    text-align: left; 
     padding-top:10px; 
     padding-bottom:10px
+}
+
+.form-key{
+    font-size: 16px;
+    color: #424656;
+    font-weight: bold;
 }
 
 /*--------------------------------------------------------------
@@ -193,18 +212,7 @@ section {
     font-size: 18px;
     font-weight: bold;
     position: relative;
-    color: #132146;
-    line-height: 1.5;
-}
-
-
-.section-title h2 {
-    font-size: 48px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    position: relative;
-    color: #efefef;
+    color: #004080;
     line-height: 1.5;
 }
 
@@ -224,14 +232,14 @@ section {
 .project-section-title{
     font-size: 32px;
     font-weight: bold !important;
-    color: #132146;
+    color: #004080;
     line-height: 1.5;
 }
 
 .project-title{
     font-size: 18px;
     font-weight: bold !important;
-    color: #132146;
+    color: #004080;
     line-height: 1.5;
 }
 
@@ -248,7 +256,7 @@ section {
 
 .btn-project{
     background-color: transparent !important;
-    color: #132146 !important;
+    color: #004080 !important;
     border-color: transparent !important;
     margin-right: 10px;
     margin-left: 10px;

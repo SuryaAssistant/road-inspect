@@ -48,6 +48,44 @@ function replaceJSON(fromJSON, toJSON, value){
 }
 
 
+function updateCard(type, ticket, nameOfRoad){
+    document.getElementById('nama_jalan').textContent = nameOfRoad;
+    document.getElementById('report-ticket').innerHTML = `${ticket}`;
+    document.getElementById('description-form').innerHTML = `
+        <label class="form-label form-key">Deskripsi</label>
+        <textarea class="form-control" id="laporDesc" rows="3" placeholder="Tulis deskripsi di sini ..."></textarea>
+    `;
+
+    if(type == 'fixing'){
+        document.getElementById('report-type').innerHTML = `
+            <span class="badge bg-danger">Report</span>
+        `;
+
+        document.getElementById('footer_button').innerHTML = `
+        <div class="mb-3">
+            <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-success mb-3" onclick="report_fixing()">Laporkan Perbaikan</button>
+        </div>
+        `;
+    }
+
+    if(type == 'finish'){
+        document.getElementById('report-type').innerHTML = `
+            <span class="badge bg-warning">Fixing Process</span>
+        `;
+
+        document.getElementById('footer_button').innerHTML = `
+        <div class="mb-3">
+            <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-success mb-3" onclick="report_finish()">Laporkan Selesai</button>
+        </div>
+        `;
+    }
+
+
+}
+
+
 function coockData(choosedBlockchainData){
     // Copy JSON with 'report' to filteredBlockchain
     let filteredBlockchain = []
@@ -70,10 +108,11 @@ function coockData(choosedBlockchainData){
 
     // show coordinate on map
     for(let i=0; i<blockchainReport.length; i++){
-        let getLatitude = blockchainReport[i][1].message.data.lat;
-        let getLongitude = blockchainReport[i][1].message.data.long
+        let lat = blockchainReport[i][1].message.data.lat;
+        let long = blockchainReport[i][1].message.data.long
+
         // Coordinates for the marker and colorize
-        const markerCoords = [getLatitude, getLongitude];
+        const markerCoords = [lat, long];
         var marker = L.marker(markerCoords).addTo(map);
         if(blockchainReport[i][1].message.data.type == 'report'){
             marker._icon.classList.add("red");
@@ -84,88 +123,25 @@ function coockData(choosedBlockchainData){
         
         marker.on('click', function () {
             $('#modalLaporRusak').modal('show');
-            document.getElementById('nama_jalan').textContent = blockchainReport[i][1].message.data.roadName;
+            let roadName = blockchainReport[i][1].message.data.roadName;
+
+            // copy value for blockchain uploading
+            clickedLatitude = lat;
+            clickedLongitude = long;
+            clickedRoad = roadName;
 
             if(blockchainReport[i][1].message.data.type == 'report'){
-                document.getElementById('lapor_jalan').innerHTML = `
-                <div class="col padding-left-right" id="blockchain_data">
-                <div class="row align-items-center">
-                    <div class="mx-auto">
-                        <div class="row" style="text-align:center">
-                        <span class="badge bg-danger">Jalan Rusak</span>
-                        </div>
-                        <p class="primecolor" style="text-align:center">
-                        <span id="laporTiket" class="modal-tiket">${blockchainReport[i][0].msgID}</span>
-                        </p>
-                        <!-- Latitude -->
-                        <div class="mb-3">
-                            <label class="form-label form-key primecolor modal-form">Latitude</label>
-                            <input class="form-control modal-form" id="laporLat" value="${getLatitude}" disabled>
-                        </div>
-                        <!-- Longitude -->
-                        <div class="mb-3">
-                            <label class="form-label form-key primecolor modal-form">Longitude</label>
-                            <input class="form-control modal-form" id="laporLong" value="${getLongitude}" disabled>
-                        </div>
-                        <!-- Deskripsi -->
-                        <div class="mb-3">
-                            <label class="form-label form-key modal-form">Deskripsi perbaikan</label>
-                            <textarea class="form-control modal-form" id="laporDesc" rows="3" placeholder="Tuliskan kerusakan jalan di sini ..."></textarea>
-                        </div>
-                    </div>
-                </div>
-                </div>
-                `;
-
-                document.getElementById('footer_button').innerHTML = `
-                <div class="mb-3">
-                    <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success mb-3" onclick="report_fixing()">Laporkan Perbaikan</button>
-                </div>
-                `;
+                updateCard('fixing', blockchainReport[i][0].msgID, roadName)
             }
 
             if(blockchainReport[i][1].message.data.type == 'fixing'){
-                document.getElementById('lapor_jalan').innerHTML = `
-                <div class="col padding-left-right" id="blockchain_data">
-                <div class="row align-items-center" >
-                    <div class="mx-auto">
-                        <div class="row" style="text-align:center">
-                        <span class="badge bg-warning">Sedang Dalam Perbaikan</span>
-                        </div>
-                        <p class="primecolor" style="text-align:center">
-                        <span id="laporTiket" class="modal-tiket">${blockchainReport[i][0].msgID}</span>
-                        </p>
-                        <!-- Latitude -->
-                        <div class="mb-3">
-                            <label class="form-label form-key primecolor modal-form">Latitude</label>
-                            <input class="form-control modal-form" id="laporLat" value="${getLatitude}" disabled>
-                        </div>
-                        <!-- Longitude -->
-                        <div class="mb-3">
-                            <label class="form-label form-key primecolor modal-form">Longitude</label>
-                            <input class="form-control modal-form" id="laporLong" value="${getLongitude}" disabled>
-                        </div>
-                        <!-- Deskripsi -->
-                        <div class="mb-3">
-                            <label class="form-label form-key modal-form">Deskripsi perbaikan</label>
-                            <textarea class="form-control modal-form" id="laporDesc" rows="3" placeholder="Tuliskan apa saja yang diperbaiki ..."></textarea>
-                        </div>
-                    </div>
-                </div>
-                </div>
-                `;
-
-                document.getElementById('footer_button').innerHTML = `
-                <div class="mb-3">
-                    <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success mb-3" onclick="report_finish()">Perbaikan Selesai</button>
-                </div>
-                `;
+                updateCard('finish', blockchainReport[i][0].msgID, roadName)
             }
         });
-
     }
+
+    document.getElementById("sync-percent").innerHTML = `100%`;
+
 
     // only choose last 5 report
     choosedBlockchainData.sort(compareByTimestamp);
@@ -223,49 +199,49 @@ const clientSocket = String(Math.floor(randomNumber));
 const socket = io.connect(socketAddr);
 let fetch_begin = false;
 
-// Event listener for connection
 socket.on('connect', () => {
     if(fetch_begin == false){
         // Send a message to the server
-        let inputMessage = "tag_msg_filter/" + blockchainIndex + '/'+ clientSocket + '/' + '>:' + cachedTimestamp + '/' + '"message"' + '/' + '"timestamp"';
+        let inputMessage = "tag_msg_filter/" + blockchainIndex + '/'+ clientSocket + 'fetch' + '/' + '>:' + cachedTimestamp + '/' + '"message"' + '/' + '"timestamp"';
         var timestamp = new Date().getTime();
 
         // only fetch from blockchain every 5 minutes
         if(timestamp - lastSync > (5*60*1000)){
             socket.emit('submit', inputMessage);
+            document.getElementById("sync-percent").innerHTML = `25%`;
         }
         else{
+            document.getElementById("sync-percent").innerHTML = `50%`;
             coockData(blockchainFullData);        
         }
     }
 });
 
-
 // Event listener for receiving messages from the server
-socket.on(clientSocket, (msg) => {
-    if(fetch_begin == false){
-        let fullMsg = msg.replace(/'/g, '"');
-        let newReportedData;
+socket.on((clientSocket + 'fetch'), (msg) => {
+    let fullMsg = msg.replace(/'/g, '"');
+    console.log(fullMsg);
+    let newReportedData;
 
-        if(fullMsg != '[]'){
-            newReportedData = JSON.parse(fullMsg);
-            let lastLength = blockchainFullData.length;
+    if(fullMsg != '[]'){
+        newReportedData = JSON.parse(fullMsg);
+        let lastLength = blockchainFullData.length;
 
-            // add new data to last cached data
-            for(let i=0; i<newReportedData.length; i++){
-                blockchainFullData[lastLength + i] = newReportedData[i];
-            }
-
-            blockchainFullData.sort(compareByTimestamp);
-
-            // save newest data
-            localStorage['dataBlockchain'] = JSON.stringify(blockchainFullData);
+        // add new data to last cached data
+        for(let i=0; i<newReportedData.length; i++){
+            blockchainFullData[lastLength + i] = newReportedData[i];
         }
 
-        coockData(blockchainFullData);
-    
-        var timestamp = new Date().getTime(); 
-        localStorage['road_inspect_last_sync'] = timestamp.toString();
+        blockchainFullData.sort(compareByTimestamp);
+
+        // save newest data
+        localStorage['dataBlockchain'] = JSON.stringify(blockchainFullData);
     }
+
+    document.getElementById("sync-percent").innerHTML = `50%`;
+    coockData(blockchainFullData);
+
+    var timestamp = new Date().getTime(); 
+    localStorage['road_inspect_last_sync'] = timestamp.toString();
 });
 
