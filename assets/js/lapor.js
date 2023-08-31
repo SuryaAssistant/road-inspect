@@ -43,6 +43,8 @@ function reportRoad(){
     document.getElementById('report-ticket').innerHTML = ``;
     document.getElementById('report-type').innerHTML = ``;
 
+    document.getElementById('ticket-open-in-new-tab').innerHTML = ``;
+    
     document.getElementById('description-form').innerHTML = `
         <label class="form-label form-key">Deskripsi kerusakan</label>
         <textarea class="form-control" id="laporDesc" rows="3" placeholder="Isikan deskripsi kerusakan jalan di sini"></textarea>
