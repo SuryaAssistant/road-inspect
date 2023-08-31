@@ -86,30 +86,46 @@ function updateCard(type, ticket, nameOfRoad){
 }
 
 
-function coockData(choosedBlockchainData){
-    // Copy JSON with 'report' to filteredBlockchain
-    let filteredBlockchain = []
-    copyJSON(choosedBlockchainData, filteredBlockchain, 'report', 1)
+//======================================================================
+// Websocket Configuration
+//======================================================================
+// create random number for socket event
+const randomNumber = Math.random() * 10000000;
+const clientSocket = String(Math.floor(randomNumber));
 
-    // if there is 'fixing' in choosedBlockchainData,  
-    // replace filteredBlockchain to 'fixing'
-    replaceJSON(choosedBlockchainData, filteredBlockchain, 'fixing')
+//======================================================================
+// Websocket Function
+//======================================================================
+const socket = io.connect(socketAddr);
+let fetch_begin = false;
 
-    // if there is 'finish' in choosedBlockchainData,  
-    // replace filteredBlockchain to 'finish'
-    replaceJSON(choosedBlockchainData, filteredBlockchain, 'finish')
+socket.on('connect', () => {
+    if(fetch_begin == false){
+        // Send a message to the server
+        //let inputMessage = "tag_msg_filter/" + blockchainIndex + '/'+ clientSocket + 'fetch' + '/' + '>:' + cachedTimestamp + '/' + '"message"' + '/' + '"timestamp"';
+        let inputMessage = "resume/" + blockchainIndex + '/' + clientSocket + 'fetch';
+        var timestamp = new Date().getTime();
 
-    // Copy JSON without 'finish' to blockchainReport
-    let blockchainReport = []
-    copyJSON(filteredBlockchain, blockchainReport, 'finish', 0)
+        // only fetch from blockchain every 5 minutes
+        socket.emit('submit', inputMessage);
+        document.getElementById("sync-percent").innerHTML = `50%`;
+    }
+});
 
-    // sort JSON
+// Event listener for receiving messages from the server
+socket.on((clientSocket + 'fetch'), (blockchainReport) => {
+
+    // This is a must to sort it first
+    // If not, data on map will shuffled
     blockchainReport.sort(compareByTimestamp);
 
+    // show on map
     // show coordinate on map
     for(let i=0; i<blockchainReport.length; i++){
         let lat = blockchainReport[i][1].message.data.lat;
         let long = blockchainReport[i][1].message.data.long
+
+        console.log(blockchainReport[i]);
 
         // Coordinates for the marker and colorize
         const markerCoords = [lat, long];
@@ -144,12 +160,12 @@ function coockData(choosedBlockchainData){
 
 
     // only choose last 5 report
-    choosedBlockchainData.sort(compareByTimestamp);
+    blockchainReport.sort(compareByTimestamp);
     let showedReport = 0;
-    for(let i=0; i<choosedBlockchainData.length; i++){
-        if(choosedBlockchainData[i][1].message.data.type == 'report'){
-            let ticketID = choosedBlockchainData[i][0].msgID;
-            let namaJalan = choosedBlockchainData[i][1].message.data.roadName;
+    for(let i=0; i<blockchainReport.length; i++){
+        if(blockchainReport[i][1].message.data.type == 'report'){
+            let ticketID = blockchainReport[i][0].msgID;
+            let namaJalan = blockchainReport[i][1].message.data.roadName;
             document.getElementById('listLaporan').innerHTML +=`
                 <span><a href="./laporan/info.html?tiket=${ticketID}">${ticketID}</a> - ${namaJalan}</span><br>
             `
@@ -160,89 +176,5 @@ function coockData(choosedBlockchainData){
 
     fetch_begin = true;
     document.getElementById('synchronization-alert').style.display = 'none';
-}
-
-// check if there is a cache
-const cachedData = localStorage.getItem('dataBlockchain');
-let blockchainFullData = [];
-let cachedTimestamp = 0;
-
-if (cachedData) {
-    // convert cache to JSON
-    //console.log("cached data = " + cachedData);
-    blockchainFullData = JSON.parse(localStorage['dataBlockchain']);
-    if(blockchainFullData[0] == undefined){
-        console.log("undefined");
-    }
-    else{
-        cachedTimestamp = blockchainFullData[0][1].message.timestamp;
-    }
-}
-
-
-const cachedLastSync = localStorage.getItem('road_inspect_last_sync');
-let lastSync = 0;
-if (cachedLastSync){
-    lastSync = parseInt(cachedLastSync);
-}
-
-//======================================================================
-// Websocket Configuration
-//======================================================================
-// create random number for socket event
-const randomNumber = Math.random() * 10000000;
-const clientSocket = String(Math.floor(randomNumber));
-
-//======================================================================
-// Websocket Function
-//======================================================================
-const socket = io.connect(socketAddr);
-let fetch_begin = false;
-
-socket.on('connect', () => {
-    if(fetch_begin == false){
-        // Send a message to the server
-        let inputMessage = "tag_msg_filter/" + blockchainIndex + '/'+ clientSocket + 'fetch' + '/' + '>:' + cachedTimestamp + '/' + '"message"' + '/' + '"timestamp"';
-        var timestamp = new Date().getTime();
-
-        // only fetch from blockchain every 5 minutes
-        if(timestamp - lastSync > (20*60*1000)){
-            socket.emit('submit', inputMessage);
-            document.getElementById("sync-percent").innerHTML = `25%`;
-        }
-        else{
-            document.getElementById("sync-percent").innerHTML = `50%`;
-            coockData(blockchainFullData);        
-        }
-    }
-});
-
-// Event listener for receiving messages from the server
-socket.on((clientSocket + 'fetch'), (msg) => {
-    console.log(msg);
-
-    let fullMsg = msg.replace(/'/g, '"');
-    let newReportedData;
-
-    if(fullMsg != '[]'){
-        newReportedData = JSON.parse(fullMsg);
-        let lastLength = blockchainFullData.length;
-
-        // add new data to last cached data
-        for(let i=0; i<newReportedData.length; i++){
-            blockchainFullData[lastLength + i] = newReportedData[i];
-        }
-
-        blockchainFullData.sort(compareByTimestamp);
-
-        // save newest data
-        localStorage['dataBlockchain'] = JSON.stringify(blockchainFullData);
-    }
-
-    document.getElementById("sync-percent").innerHTML = `50%`;
-    coockData(blockchainFullData);
-
-    var timestamp = new Date().getTime(); 
-    localStorage['road_inspect_last_sync'] = timestamp.toString();
 });
 
