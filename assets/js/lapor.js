@@ -39,10 +39,9 @@ function reportRoad(){
     // update row
     $('#modalLaporRusak').modal('show');
 
+    document.getElementById('nama_jalan').textContent = clickedRoad;
     document.getElementById('report-ticket').innerHTML = ``;
     document.getElementById('report-type').innerHTML = ``;
-
-    document.getElementById('nama_jalan').textContent = clickedRoad;
 
     document.getElementById('description-form').innerHTML = `
         <label class="form-label form-key">Deskripsi kerusakan</label>
@@ -50,10 +49,7 @@ function reportRoad(){
     `;
 
     document.getElementById('footer_button').innerHTML = `
-    <div class="mb-3">
-        <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Close</button>
         <button type="button" class="btn btn-success mb-3" onclick="report()">Laporkan</button>
-    </div>
     `;
 }
 
@@ -133,6 +129,9 @@ function wsConnect(){
             <p>Harap menunggu. Biasanya memerlukan waktu 1-2 menit</p>
         </div>
     `;
+
+    // hide button
+    document.getElementById('footer_button').innerHTML = ``;
 }
 
 
@@ -152,5 +151,10 @@ socket.on((clientSocket + 'lapor'), (msg) => {
             <p>Kode ticket : <a href="./laporan/info.html?tiket=${response}">${response}</a></p>
         </div>
     `;
-//    socket.disconnect();
+
+
+    // show close button
+    document.getElementById('footer_button').innerHTML = `
+        <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Tutup</button>
+    `;
 });

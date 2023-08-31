@@ -48,13 +48,19 @@ function replaceJSON(fromJSON, toJSON, value){
 }
 
 
+
 function updateCard(type, ticket, nameOfRoad){
     document.getElementById('nama_jalan').textContent = nameOfRoad;
     document.getElementById('report-ticket').innerHTML = `${ticket}`;
     document.getElementById('description-form').innerHTML = `
-        <label class="form-label form-key">Deskripsi</label>
+        <label class="form-label form-key">Deskripsi (opsional)</label>
         <textarea class="form-control" id="laporDesc" rows="3" placeholder="Tulis deskripsi di sini ..."></textarea>
     `;
+    document.getElementById('ticket-open-in-new-tab').innerHTML = `
+        <a href="./laporan/info.html?tiket=${ticket}" target=_blank><i class='bx bx-link-external'></i></a>
+    `;
+
+    //<button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Close</button>
 
     if(type == 'fixing'){
         document.getElementById('report-type').innerHTML = `
@@ -62,10 +68,7 @@ function updateCard(type, ticket, nameOfRoad){
         `;
 
         document.getElementById('footer_button').innerHTML = `
-        <div class="mb-3">
-            <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Close</button>
             <button type="button" class="btn btn-success mb-3" onclick="report_fixing()">Laporkan Perbaikan</button>
-        </div>
         `;
     }
 
@@ -75,10 +78,7 @@ function updateCard(type, ticket, nameOfRoad){
         `;
 
         document.getElementById('footer_button').innerHTML = `
-        <div class="mb-3">
-            <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Close</button>
             <button type="button" class="btn btn-success mb-3" onclick="report_finish()">Laporkan Selesai</button>
-        </div>
         `;
     }
 
@@ -206,7 +206,7 @@ socket.on('connect', () => {
         var timestamp = new Date().getTime();
 
         // only fetch from blockchain every 5 minutes
-        if(timestamp - lastSync > (5*60*1000)){
+        if(timestamp - lastSync > (20*60*1000)){
             socket.emit('submit', inputMessage);
             document.getElementById("sync-percent").innerHTML = `25%`;
         }
@@ -219,8 +219,9 @@ socket.on('connect', () => {
 
 // Event listener for receiving messages from the server
 socket.on((clientSocket + 'fetch'), (msg) => {
+    console.log(msg);
+
     let fullMsg = msg.replace(/'/g, '"');
-    console.log(fullMsg);
     let newReportedData;
 
     if(fullMsg != '[]'){
