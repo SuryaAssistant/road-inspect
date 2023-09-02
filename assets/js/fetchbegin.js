@@ -49,13 +49,14 @@ function replaceJSON(fromJSON, toJSON, value){
 
 
 
-function updateCard(type, ticket, nameOfRoad){
+function updateCard(type, ticket, nameOfRoad, description_detail){
     document.getElementById('nama_jalan').textContent = nameOfRoad;
     document.getElementById('report-ticket').innerHTML = `${ticket}`;
     document.getElementById('description-form').innerHTML = `
-        <label class="form-label form-key">Deskripsi (opsional)</label>
-        <textarea class="form-control" id="laporDesc" rows="3" placeholder="Tulis deskripsi di sini ..."></textarea>
+        <label class="form-label form-key">Deskripsi Kerusakan</label>
+        <p>${description_detail}</p>
     `;
+
     document.getElementById('ticket-open-in-new-tab').innerHTML = `
         <a href="./laporan/info.html?tiket=${ticket}" target=_blank><i class='bx bx-link-external'></i></a>
     `;
@@ -123,7 +124,8 @@ socket.on((clientSocket + 'fetch'), (blockchainReport) => {
     // show coordinate on map
     for(let i=0; i<blockchainReport.length; i++){
         let lat = blockchainReport[i][1].message.data.lat;
-        let long = blockchainReport[i][1].message.data.long
+        let long = blockchainReport[i][1].message.data.long;
+        let desc_detail = blockchainReport[i][1].message.data.desc;
 
         console.log(blockchainReport[i]);
 
@@ -147,11 +149,11 @@ socket.on((clientSocket + 'fetch'), (blockchainReport) => {
             clickedRoad = roadName;
 
             if(blockchainReport[i][1].message.data.type == 'report'){
-                updateCard('fixing', blockchainReport[i][0].msgID, roadName)
+                updateCard('fixing', blockchainReport[i][0].msgID, roadName, desc_detail)
             }
 
             if(blockchainReport[i][1].message.data.type == 'fixing'){
-                updateCard('finish', blockchainReport[i][0].msgID, roadName)
+                updateCard('finish', blockchainReport[i][0].msgID, roadName, desc_detail)
             }
         });
     }
