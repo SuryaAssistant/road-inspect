@@ -11,63 +11,27 @@ function compareByTimestamp(a, b) {
     return 0;
 }
 
-function copyJSON(fromJSON, toJSON, value, equal){
-    let count = 0;
-
-    if(equal == 0){
-        for(let i=0; i<fromJSON.length; i++){
-            if(fromJSON[i][1].message.data.type != value){
-                toJSON[count] = fromJSON[i];
-                count +=1;
-            }
-        }
-    }
-
-    if(equal == 1){
-        for(let i=0; i<fromJSON.length; i++){
-            if(fromJSON[i][1].message.data.type == value){
-                toJSON[count] = fromJSON[i];
-                count +=1;
-            }
-        }
-    }
-}
-
-function replaceJSON(fromJSON, toJSON, value){
-    for(let i=0; i<fromJSON.length; i++){
-        if(fromJSON[i][1].message.data.type == value){
-            // search in toJSON with selected id
-            let targetTicket = fromJSON[i][1].message.data.ticket;
-            for(let i=0; i<toJSON.length; i++){
-                if(toJSON[i][0].msgID == targetTicket){
-                    toJSON[i][1].message.data.type = value;
-                }
-            }
-        }
-    }
-}
-
-
 
 function updateCard(type, ticket, nameOfRoad, description_detail){
     document.getElementById('nama_jalan').textContent = nameOfRoad;
     document.getElementById('report-ticket').innerHTML = `${ticket}`;
     document.getElementById('description-form').innerHTML = `
         <label class="form-label form-key">Deskripsi Kerusakan</label>
-        <p>${description_detail}</p>
+        <p id="desc-detail">${description_detail}</p>
     `;
-
+    document.getElementById('keyword-form').innerHTML = `
+        <label for="keywordform" class="form-label form-key">Kata Kunci</label>
+        <input class="form-control" id="laporKey" placeholder="Masukkan kata kunci">
+    `;
     document.getElementById('ticket-open-in-new-tab').innerHTML = `
         <a href="./laporan/info.html?tiket=${ticket}" target=_blank><i class='bx bx-link-external'></i></a>
     `;
 
-    //<button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Close</button>
 
     if(type == 'fixing'){
         document.getElementById('report-type').innerHTML = `
             <span class="badge bg-danger">Report</span>
         `;
-
         document.getElementById('footer_button').innerHTML = `
             <button type="button" class="btn btn-success mb-3" onclick="report_fixing()">Laporkan Perbaikan</button>
         `;
@@ -77,7 +41,6 @@ function updateCard(type, ticket, nameOfRoad, description_detail){
         document.getElementById('report-type').innerHTML = `
             <span class="badge bg-warning">Fixing Process</span>
         `;
-
         document.getElementById('footer_button').innerHTML = `
             <button type="button" class="btn btn-success mb-3" onclick="report_finish()">Laporkan Selesai</button>
         `;
@@ -103,7 +66,6 @@ let fetch_begin = false;
 socket.on('connect', () => {
     if(fetch_begin == false){
         // Send a message to the server
-        //let inputMessage = "tag_msg_filter/" + blockchainIndex + '/'+ clientSocket + 'fetch' + '/' + '>:' + cachedTimestamp + '/' + '"message"' + '/' + '"timestamp"';
         let inputMessage = "resume/" + blockchainIndex + '/' + clientSocket + 'fetch';
         var timestamp = new Date().getTime();
 
@@ -126,8 +88,11 @@ socket.on((clientSocket + 'fetch'), (blockchainReport) => {
         let lat = blockchainReport[i][1].message.data.lat;
         let long = blockchainReport[i][1].message.data.long;
         let desc_detail = blockchainReport[i][1].message.data.desc;
+        let msgHashKey = '';
+        if('hashKey' in blockchainReport[i][1].message.data){
+            msgHashKey = blockchainReport[i][1].message.data.hashKey;
+        }
 
-        console.log(blockchainReport[i]);
 
         // Coordinates for the marker and colorize
         const markerCoords = [lat, long];
@@ -147,6 +112,7 @@ socket.on((clientSocket + 'fetch'), (blockchainReport) => {
             clickedLatitude = lat;
             clickedLongitude = long;
             clickedRoad = roadName;
+            userHashKey = msgHashKey;
 
             if(blockchainReport[i][1].message.data.type == 'report'){
                 updateCard('fixing', blockchainReport[i][0].msgID, roadName, desc_detail)

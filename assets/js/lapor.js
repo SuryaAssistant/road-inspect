@@ -6,6 +6,8 @@ let clickedLongitude;
 let clickedRoad;
 
 let productJSON;
+let userKeyword;
+let userHashKey;
 
 // =========================================================================================
 // Data Issuer Identifier
@@ -50,6 +52,11 @@ function reportRoad(){
         <textarea class="form-control" id="laporDesc" rows="3" placeholder="Isikan deskripsi kerusakan jalan di sini"></textarea>
     `;
 
+    document.getElementById('keyword-form').innerHTML = `
+        <label for="keywordform" class="form-label form-key">Kata Kunci</label>
+        <input class="form-control" id="laporKey" placeholder="Kata yang mudah Anda hapal">
+    `;
+
     document.getElementById('footer_button').innerHTML = `
         <button type="button" class="btn btn-success mb-3" onclick="report()">Laporkan</button>
     `;
@@ -63,9 +70,13 @@ function reportRoad(){
 // =========================================================================================
 function report(){
     let reportDescription = document.getElementById('laporDesc').value;
+    userKeyword = document.getElementById('laporKey').value;
+
+    // Calculate userKeyword Hash
+    let userKeywordHash = CryptoJS.SHA3(userKeyword, {outputLength: 256}).toString(CryptoJS.enc.Hex);
 
     // Create special JSON format
-    productJSON = "{'type':'report','issuer':'"+issuer+"','roadName':'"+clickedRoad+"','lat':'"+clickedLatitude+"','long':'"+clickedLongitude+"','desc':'"+reportDescription+"'}";
+    productJSON = "{'type':'report','issuer':'"+issuer+"','roadName':'"+clickedRoad+"','lat':'"+clickedLatitude+"','long':'"+clickedLongitude+"','desc':'"+reportDescription+"','hashKey':'"+userKeywordHash+"'}";
     
     //Connect Websocket 
     wsConnect();
@@ -83,10 +94,12 @@ function report_fixing(){
     let mainTicket = document.getElementById('report-ticket').textContent;
     let reportLat = clickedLatitude;
     let reportLong = clickedLongitude;
-    let reportDescription = document.getElementById('laporDesc').value;
+    let reportDescription = document.getElementById('desc-detail').textContent;
+    userKeyword = document.getElementById('laporKey').value;
 
     // Create special JSON format
-    productJSON = "{'type':'fixing','issuer':'"+issuer+"','ticket':'"+mainTicket+"','roadName':'"+roadName+"','lat':'"+reportLat+"','long':'"+reportLong+"','desc':'"+reportDescription+"'}";
+    productJSON = "{'type':'fixing','issuer':'"+issuer+"','ticket':'"+mainTicket+"','roadName':'"+roadName+"','lat':'"+reportLat+"','long':'"+reportLong+"','desc':'"+reportDescription+"','hashKey':'"+userHashKey+"'}";
+    
     //Connect websocket 
     wsConnect();
 }
@@ -102,11 +115,12 @@ function report_finish(){
     let roadName = clickedRoad;
     let mainTicket = document.getElementById('report-ticket').textContent;
     let reportLat = clickedLatitude;
-    let reportLong = clickedLongitude;;
-    let reportDescription = document.getElementById('laporDesc').value;
+    let reportLong = clickedLongitude;
+    let reportDescription = document.getElementById('desc-detail').textContent;
+    userKeyword = document.getElementById('laporKey').value;
 
     // Create special JSON format
-    productJSON = "{'type':'finish','issuer':'"+issuer+"','ticket':'"+mainTicket+"','roadName':'"+roadName+"','lat':'"+reportLat+"','long':'"+reportLong+"','desc':'"+reportDescription+"'}";
+    productJSON = "{'type':'finish','issuer':'"+issuer+"','ticket':'"+mainTicket+"','roadName':'"+roadName+"','lat':'"+reportLat+"','long':'"+reportLong+"','desc':'"+reportDescription+"','hashKey':'"+userHashKey+"'}";
     //Connect websocket 
     wsConnect();
 }
@@ -119,9 +133,10 @@ function report_finish(){
 // connect to websocket
 function wsConnect(){
     document.getElementById("description-form").innerHTML=``;
+    document.getElementById("keyword-form").innerHTML=``;
 
     // Send a message to the server
-    let inputMessage = "data/" + productJSON + '/'+ clientSocket + 'lapor' + '/' + blockchainIndex;
+    let inputMessage = "data/" + productJSON + '/'+ clientSocket + 'lapor' + '/' + blockchainIndex + '/' + userKeyword;
     socket.emit('submit', inputMessage);
 
     // change display
