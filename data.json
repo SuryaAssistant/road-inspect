@@ -203,6 +203,58 @@
       {
         "fileName": "asnawi.geojson",
         "roadName": "Jalan KH. R. Asnawi"
+      },
+      {
+        "fileName": "bhakti.geojson",
+        "roadName": "Jalan Bhakti"
+      },
+      {
+        "fileName": "mayor_kusmanto.geojson",
+        "roadName": "Jalan Mayor Kusmanto"
+      },
+      {
+        "fileName": "kapten_ali_mahmudi.geojson",
+        "roadName": "Jalan Kapten Ali Mahmudi"
+      },
+      {
+        "fileName": "yos_sudarso.geojson",
+        "roadName": "Jalan Yos Sudarso"
+      },
+      {
+        "fileName": "pangeran_diponegoro.geojson",
+        "roadName": "Jalan Pangeran Diponegoro"
+      },
+      {
+        "fileName": "r_a_kartini.geojson",
+        "roadName": "Jalan R. A. Kartini"
+      },
+      {
+        "fileName": "veteran.geojson",
+        "roadName": "Jalan Veteran"
+      },
+      {
+        "fileName": "kh_turaichan.geojson",
+        "roadName": "Jalan K. H. Turaichan"
+      },
+      {
+        "fileName": "kh_achmad_dahlan.geojson",
+        "roadName": "Jalan K. H. Achmad Dahlan"
+      },
+      {
+        "fileName": "menara.geojson",
+        "roadName": "Jalan Menara"
+      },
+      {
+        "fileName": "pangeran_puger.geojson",
+        "roadName": "Jalan Pangeran Puger"
+      },
+      {
+        "fileName": "rahtawu.geojson",
+        "roadName": "Jalan Rahtawu"
+      },
+      {
+        "fileName": "pr_sukun_raya.geojson",
+        "roadName": "Jalan PR. Sukun Raya"
       }
     ]
   }
