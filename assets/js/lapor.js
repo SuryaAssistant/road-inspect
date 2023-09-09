@@ -44,7 +44,7 @@ function reportRoad(){
     document.getElementById('nama_jalan').textContent = clickedRoad;
     document.getElementById('report-ticket').innerHTML = ``;
     document.getElementById('report-type').innerHTML = ``;
-
+    document.getElementById('report-time').innerHTML = ``;
     document.getElementById('ticket-open-in-new-tab').innerHTML = ``;
     
     document.getElementById('description-form').innerHTML = `
@@ -154,10 +154,9 @@ function wsConnect(){
 
 
 socket.on((clientSocket + 'lapor'), (msg) => {
-    // 64
     let response=msg;
 
-    // error
+    // if error
     if(response.length != 64){
         // show the data in html
         document.getElementById("description-form").innerHTML = `
@@ -179,8 +178,6 @@ socket.on((clientSocket + 'lapor'), (msg) => {
         document.getElementById("description-form").innerHTML = `
             <div class="row textprimecolor" style="text-align:center">
                 <p><b>Terima kasih sudah melaporkan</b>
-                <br>
-                <span>Laporan berhasil diunggah ke blockchain.</span>
                 </p>
                 <p>Kode ticket : <a href="./laporan/info.html?tiket=${response}">${response}</a></p>
             </div>

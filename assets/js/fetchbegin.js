@@ -12,16 +12,14 @@ function compareByTimestamp(a, b) {
 }
 
 
-function updateCard(type, ticket, nameOfRoad, description_detail){
+function updateCard(type, ticket, nameOfRoad, description_detail, reportTime){
     document.getElementById('nama_jalan').textContent = nameOfRoad;
     document.getElementById('report-ticket').innerHTML = `${ticket}`;
     document.getElementById('description-form').innerHTML = `
-        <label class="form-label form-key">Deskripsi Kerusakan</label>
         <p id="desc-detail">${description_detail}</p>
     `;
     document.getElementById('keyword-form').innerHTML = `
-        <label for="keywordform" class="form-label form-key">Kata Kunci</label>
-        <input class="form-control" id="laporKey" placeholder="Masukkan kata kunci">
+        <input class="form-control" style="text-align: center;" id="laporKey" placeholder="Masukkan kata kunci">
     `;
     document.getElementById('ticket-open-in-new-tab').innerHTML = `
         <a href="./laporan/info.html?tiket=${ticket}" target=_blank><i class='bx bx-link-external'></i></a>
@@ -32,8 +30,11 @@ function updateCard(type, ticket, nameOfRoad, description_detail){
         document.getElementById('report-type').innerHTML = `
             <span class="badge bg-danger">Report</span>
         `;
+        document.getElementById('report-time').innerHTML = `
+            <span class="badge bg-light text-dark">${reportTime}</span>
+        `;
         document.getElementById('footer_button').innerHTML = `
-            <button type="button" class="btn btn-success mb-3" onclick="report_fixing()">Laporkan Perbaikan</button>
+            <button type="button" class="btn btn-success" onclick="report_fixing()">Laporkan Perbaikan</button>
         `;
     }
 
@@ -41,12 +42,59 @@ function updateCard(type, ticket, nameOfRoad, description_detail){
         document.getElementById('report-type').innerHTML = `
             <span class="badge bg-warning">Fixing Process</span>
         `;
+        document.getElementById('report-time').innerHTML = `
+            <span class="badge bg-light text-dark">${reportTime}</span>
+        `;
         document.getElementById('footer_button').innerHTML = `
-            <button type="button" class="btn btn-success mb-3" onclick="report_finish()">Laporkan Selesai</button>
+            <button type="button" class="btn btn-success" onclick="report_finish()">Laporkan Selesai</button>
         `;
     }
 
 
+}
+
+
+function getTimeDifference(timestampInSeconds) {
+    // Get the current timestamp in milliseconds
+    var currentTimestamp = Date.now();
+
+    // Convert the given timestamp to milliseconds
+    var givenTimestampInMilliseconds = timestampInSeconds * 1000;
+
+    // Calculate the time difference in milliseconds
+    var timeDifference = currentTimestamp - givenTimestampInMilliseconds;
+
+    // Calculate time intervals
+    var seconds = Math.floor(timeDifference / 1000);
+    var minutes = Math.floor(seconds / 60);
+    var hours = Math.floor(minutes / 60);
+    var days = Math.floor(hours / 24);
+    var months = Math.floor(days / 30); // Assuming an average of 30 days per month
+
+    // Prepare the result string based on time intervals
+    var result = "";
+    
+    if (seconds > 0){
+        result = seconds + " detik lalu";
+    }
+
+    if (minutes > 0){
+        result = minutes + " menit lalu";
+    }
+
+    if (hours > 0){
+        result = hours + " jam lalu";
+    }
+
+    if (days > 0) {
+        result = days + " hari lalu ";
+    }
+
+    if (months > 0) {
+        result = months + " bulan lalu ";
+    }
+
+    return result;
 }
 
 
@@ -107,6 +155,10 @@ socket.on((clientSocket + 'fetch'), (blockchainReport) => {
         marker.on('click', function () {
             $('#modalLaporRusak').modal('show');
             let roadName = blockchainReport[i][1].message.data.roadName;
+            let reportTime = blockchainReport[i][1].message.timestamp;
+
+            // Get the time difference in a human-readable format
+            var timeDifferenceString = getTimeDifference(reportTime);
 
             // copy value for blockchain uploading
             clickedLatitude = lat;
@@ -115,11 +167,11 @@ socket.on((clientSocket + 'fetch'), (blockchainReport) => {
             userHashKey = msgHashKey;
 
             if(blockchainReport[i][1].message.data.type == 'report'){
-                updateCard('fixing', blockchainReport[i][0].msgID, roadName, desc_detail)
+                updateCard('fixing', blockchainReport[i][0].msgID, roadName, desc_detail, timeDifferenceString)
             }
 
             if(blockchainReport[i][1].message.data.type == 'fixing'){
-                updateCard('finish', blockchainReport[i][0].msgID, roadName, desc_detail)
+                updateCard('finish', blockchainReport[i][0].msgID, roadName, desc_detail, timeDifferenceString)
             }
         });
     }
