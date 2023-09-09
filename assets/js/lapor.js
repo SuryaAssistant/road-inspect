@@ -154,24 +154,43 @@ function wsConnect(){
 
 
 socket.on((clientSocket + 'lapor'), (msg) => {
+    // 64
     let response=msg;
-    // show the data in html
-    document.getElementById("description-form").innerHTML = `
-        <div class="row textprimecolor" style="text-align:center">
-            <p><b>Terima kasih sudah melaporkan</b></p>
-            <br>
-            <p>
-            <span>Laporan berhasil diunggah ke blockchain.</span>
-            <br>
-            <span>Sistem akan diperbarui setelah 3-5 menit.</span>
-            </p>
-            <p>Kode ticket : <a href="./laporan/info.html?tiket=${response}">${response}</a></p>
-        </div>
-    `;
+
+    // error
+    if(response.length != 64){
+        // show the data in html
+        document.getElementById("description-form").innerHTML = `
+            <div class="row textprimecolor" style="text-align:center">
+                <p>
+                <span><b>${response}</b></span>
+                </p>
+            </div>
+        `;
+
+        // show close button
+        document.getElementById('footer_button').innerHTML = `
+            <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Tutup</button>
+        `;
+    }
+
+    else{
+        // show the data in html
+        document.getElementById("description-form").innerHTML = `
+            <div class="row textprimecolor" style="text-align:center">
+                <p><b>Terima kasih sudah melaporkan</b>
+                <br>
+                <span>Laporan berhasil diunggah ke blockchain.</span>
+                </p>
+                <p>Kode ticket : <a href="./laporan/info.html?tiket=${response}">${response}</a></p>
+            </div>
+        `;
 
 
-    // show close button
-    document.getElementById('footer_button').innerHTML = `
-        <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Tutup</button>
-    `;
+        // show close button
+        document.getElementById('footer_button').innerHTML = `
+            <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Tutup</button>
+        `;
+    }
+
 });
