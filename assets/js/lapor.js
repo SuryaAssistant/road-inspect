@@ -29,7 +29,20 @@ if(getIP == false){
     getIP = true;
 }
 
-
+function copyID(){
+    // Get the text field
+    var copyText = document.getElementById("responseID");
+    
+    // Select the text field
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); // For mobile devices
+    
+    // Copy the text inside the text field
+    navigator.clipboard.writeText(copyText.value);
+    
+    // Alert the copied text
+    alert("Copied the text: " + copyText.value);
+}
 // =========================================================================================
 // Function to show modal contain road description form
 //
@@ -39,14 +52,18 @@ if(getIP == false){
 
 function reportRoad(){
     // update row
-    $('#modalLaporRusak').modal('show');
+    $('#modal-card').modal('show');
 
-    document.getElementById('nama_jalan').textContent = clickedRoad;
+    document.getElementById('road-name').textContent = clickedRoad;
     document.getElementById('report-ticket').innerHTML = ``;
     document.getElementById('report-type').innerHTML = ``;
     document.getElementById('report-time').innerHTML = ``;
     document.getElementById('ticket-open-in-new-tab').innerHTML = ``;
-    
+
+    document.getElementById('road-img').innerHTML = `
+        <img src="./assets/img/warning.png" style="height:200px">
+    `;
+
     document.getElementById('description-form').innerHTML = `
         <label class="form-label form-key">Deskripsi kerusakan</label>
         <textarea class="form-control" id="laporDesc" rows="3" placeholder="Isikan deskripsi kerusakan jalan di sini"></textarea>
@@ -58,7 +75,7 @@ function reportRoad(){
     `;
 
     document.getElementById('footer_button').innerHTML = `
-        <button type="button" class="btn btn-success mb-3" onclick="report()">Laporkan</button>
+        <button type="button" class="btn btn-success" onclick="report()">Laporkan</button>
     `;
 }
 
@@ -156,37 +173,66 @@ function wsConnect(){
 socket.on((clientSocket + 'lapor'), (msg) => {
     let response=msg;
 
+    //<br>
+    //<button type="button" class="btn btn-light" onclick="copyID()" style="border-radius:50px; font-size:14px; margin-top:10px"><i class='bx bx-link-alt'></i> Copy</button>
+    
     // if error
     if(response.length != 64){
-        // show the data in html
+        // error image
+        document.getElementById('road-img').innerHTML = `
+            <img src="./assets/img/circle-error.png" style="height:150px; margin-top:25px; margin-bottom:25px">
+        `;
+        
         document.getElementById("description-form").innerHTML = `
             <div class="row textprimecolor" style="text-align:center">
                 <p>
-                <span><b>${response}</b></span>
+                    <span><b>${response}</b></span>
                 </p>
             </div>
         `;
 
         // show close button
         document.getElementById('footer_button').innerHTML = `
-            <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Tutup</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
         `;
     }
 
     else{
-        // show the data in html
         document.getElementById("description-form").innerHTML = `
             <div class="row textprimecolor" style="text-align:center">
-                <p><b>Terima kasih sudah melaporkan</b>
+                <p>
+                    <b>Terima kasih sudah melaporkan</b>
                 </p>
-                <p>Kode ticket : <a href="./laporan/info.html?tiket=${response}">${response}</a></p>
+                <p>Kode ticket : <a href="./laporan/info.html?tiket=${response}" id="responseID">${response}</a></p>
             </div>
+            <div class="row" id="share-button"></div>
         `;
-
 
         // show close button
         document.getElementById('footer_button').innerHTML = `
-            <button type="button" class="btn btn-danger mb-3" data-bs-dismiss="modal">Tutup</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+        `;
+
+        // Share button
+        var ticketURL = "https://dalankudus.xyz/laporan/info.html?tiket=" + response;
+        var prefilledText = "Saya baru saja melaporkan adanya kerusakan jalan melalui Dalan Kudus. Anda juga dapat melihat lokasi dan progress laporan di sini.%0D%0A %0D%0A";
+
+        var whatsappURL = "https://api.whatsapp.com/send?text=" + prefilledText + ticketURL;
+        var facebookURL = "https://www.facebook.com/sharer/sharer.php?u=" + ticketURL + "&quote=" + prefilledText;
+        var twitterURL = "https://twitter.com/intent/tweet?url=" + ticketURL + "&text=" + prefilledText;
+        
+        document.getElementById("share-button").innerHTML += `
+            <div class="col">
+            </div>
+            <div class="col">
+                <div class="row">
+                <span style="font-size:26px; text-align:right">
+                    <a href="${facebookURL}" target="_blank" style="opacity:0.75; color:#4267B2; margin-right:5px"><i class='bx bxl-facebook-circle'></i></a>
+                    <a href="${twitterURL}" target="_blank" style="opacity:0.75; color:#00acee; margin-right:5px"><i class='bx bxl-twitter'></i></a>
+                    <a href="${whatsappURL}" target="_blank" style="opacity:0.75; color:#075e54; margin-right:5px"><i class='bx bxl-whatsapp'></i></a>
+                </span>
+                </div>
+            </div>
         `;
     }
 

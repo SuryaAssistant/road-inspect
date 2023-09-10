@@ -13,7 +13,7 @@ function compareByTimestamp(a, b) {
 
 
 function updateCard(type, ticket, nameOfRoad, description_detail, reportTime){
-    document.getElementById('nama_jalan').textContent = nameOfRoad;
+    document.getElementById('road-name').textContent = nameOfRoad;
     document.getElementById('report-ticket').innerHTML = `${ticket}`;
     document.getElementById('description-form').innerHTML = `
         <p id="desc-detail">${description_detail}</p>
@@ -25,6 +25,9 @@ function updateCard(type, ticket, nameOfRoad, description_detail, reportTime){
         <a href="./laporan/info.html?tiket=${ticket}" target=_blank><i class='bx bx-link-external'></i></a>
     `;
 
+    document.getElementById('road-img').innerHTML = `
+        <img src="./assets/img/warning.png" style="height:200px">
+    `;
 
     if(type == 'fixing'){
         document.getElementById('report-type').innerHTML = `
@@ -153,7 +156,7 @@ socket.on((clientSocket + 'fetch'), (blockchainReport) => {
         }
         
         marker.on('click', function () {
-            $('#modalLaporRusak').modal('show');
+            $('#modal-card').modal('show');
             let roadName = blockchainReport[i][1].message.data.roadName;
             let reportTime = blockchainReport[i][1].message.timestamp;
 
