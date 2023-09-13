@@ -47,7 +47,6 @@
             <div class="collapse navbar-collapse justify-content-end navbar-menu" id="expandNavbar">
                 <ul class="navbar-nav" style="text-align: center;">
                     <li class="nav-item">
-                        <a class="nav-link whitecolor" href="./lapor.html">Info Tiket</a>
                     </li>
                 </ul>
             </div>
@@ -55,7 +54,7 @@
     </nav>
 
     <!-- hero page -->
-    <section id="home" class="d-flex flex-column justify-content-center" style="padding-top: 50px; margin-top: -40px; min-height: 100vh;">
+    <section id="home" class="d-flex flex-column justify-content-center" style="margin-top: -40px; min-height: 100vh;">
         <div class="container" style="overflow: hidden;">
             <div class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
@@ -68,7 +67,7 @@
                                             <div class="row" >
                                                 <div class="col">
                                                     <!-- Map here -->
-                                                    <div id="map" style="height: 50vh; border-radius: 25px; margin-right:20px">
+                                                    <div id="map" style="height: 50vh; border-radius: 25px; margin-right:10px; margin-left:10px">
                                                     </div>
                                                 </div>
                                             </div>
@@ -90,10 +89,10 @@
                                                                     <h1 class="" style="text-align: left;">Nomor Tiket</h1>
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div class="col-9">
+                                                                    <div class="col">
                                                                         <input class="form-control" id="nomor_tiket" name="tiket" placeholder="Masukkan nomor tiket">
                                                                     </div>
-                                                                    <div class="col-3">
+                                                                    <div class="col-4" style="text-align: right;">
                                                                         <button class="btn btn-card-inline" type="button" onclick="cariTiket()">
                                                                             <i class='bx bx-search'></i> Cari
                                                                         </button>
@@ -120,9 +119,9 @@
     </section>
 
     <!-- Footer -->
-    <section class="d-flex flex-column justify-content-center" style="padding-top: 0px; padding-bottom:10px; background:#000221">
+    <section class="d-flex flex-column justify-content-center primebackground" style="padding-top: 0px; padding-bottom:10px;">
         <div class="container">
-            <div class="row" style="margin-left: 0px; margin-right: 0px; background-color: #000221; padding-top:20px;">
+            <div class="row primebackground" style="margin-left: 0px; margin-right: 0px; padding-top:20px;">
                 <div class="col" style="text-align:left;">
                     <div class="row" style="padding-bottom : 20px">
                         <div class="col">
@@ -136,7 +135,7 @@
                             </p>
                         </div>
                         <div class="col-5" style="text-align: right;">
-                            <img src="../assets/img/iota.svg" style="height: 75px;"></img>
+                            <img src="../assets/img/iota.svg" style="max-height: 60px;"></img>
                         </div>
                     </div>
                 </div>
@@ -164,7 +163,7 @@
 
     <script>
         const cityCoords = [-6.8045, 110.8431];    
-        var map = L.map('map',{zoomControl: false}).setView(cityCoords, 12);
+        var map = L.map('map',{zoomControl: false}).setView(cityCoords, 15);
     
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
