@@ -68,12 +68,14 @@ socket.on((clientSocket+'main'), (msg) => {
             // Add market on map
             let getLatitude = blockchainData.message.data.lat;
             let getLongitude = blockchainData.message.data.long
+            map.setView (new L.LatLng (getLatitude, getLongitude), 14);
+
             // Coordinates for the marker
             const markerCoords = [getLatitude, getLongitude];
         
             // Add a marker (pin) to the map
             const marker = L.marker(markerCoords).addTo(map);
-        
+
             // show the data in html
             document.getElementById("detail_laporan").innerHTML=`
             <div class="col">
@@ -119,56 +121,56 @@ socket.on((clientSocket+'main'), (msg) => {
                 <div class="row">
                     <div class="col">
                         <span class="form-key">KODE TIKET / <i>TICKET ID</i>: </span>
-                        <br><span>${ticketID}</span><br>
+                        <br><span style="word-wrap:break-word">${ticketID}</span><br>
                         <hr>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
                         <span class="form-key">JALUR LAPORAN UTAMA / <i>MAIN REPORT BRANCH</i> : </span>
-                        <br><span id="main_branch"></span><br>
+                        <br><span style="word-wrap:break-word" id="main_branch"></span><br>
                         <hr>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
                         <span class="form-key">PELAPOR / <i>ISSUER</i> : </span>
-                        <br><span>${blockchainData.message.data.issuer}</span><br>
+                        <br><span style="word-wrap:break-word">${blockchainData.message.data.issuer}</span><br>
                         <hr>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
                         <span class="form-key">TIPE LAPORAN / <i>REPORT TYPE</i> : </span>
-                        <br><span id="report_type"></span><br>
+                        <br><span style="word-wrap:break-word" id="report_type"></span><br>
                         <hr>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
                         <span class="form-key">TANGGAL PELAPORAN / <i>REPORT DATE</i> : </span>
-                        <br><span>${tanggalLapor}</span><br>
+                        <br><span style="word-wrap:break-word">${tanggalLapor}</span><br>
                         <hr>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
                         <span class="form-key">NAMA JALAN / <i>ROAD NAME</i> : </span>
-                        <br><span>${blockchainData.message.data.roadName}</span><br>
+                        <br><span style="word-wrap:break-word">${blockchainData.message.data.roadName}</span><br>
                         <hr>
                     </div>
                 </div>                                                            
                 <div class="row">
                     <div class="col">
                         <span class="form-key">LATITUDE, LONGITUDE / <i>LATITUDE, LONGITUDE</i> : </span>
-                        <br><span>${getLatitude}, ${getLongitude}</span><br>
+                        <br><span style="word-wrap:break-word">${getLatitude}, ${getLongitude}</span><br>
                         <hr>
                     </div>
                 </div>                                                            
                 <div class="row">
                     <div class="col">
                         <span class="form-key">DESKRIPSI LAPORAN / <i>REPORT DESCRIPTION</i> : </span>
-                        <br><span>${blockchainData.message.data.desc}</span><br>
+                        <br><span style="word-wrap:break-word">${blockchainData.message.data.desc}</span><br>
                         <hr>
                     </div>
                 </div>
