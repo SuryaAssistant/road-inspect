@@ -29,55 +29,54 @@ if(getIP == false){
     getIP = true;
 }
 
-function copyID(){
-    // Get the text field
-    var copyText = document.getElementById("responseID");
-    
-    // Select the text field
-    copyText.select();
-    copyText.setSelectionRange(0, 99999); // For mobile devices
-    
-    // Copy the text inside the text field
-    navigator.clipboard.writeText(copyText.value);
-    
-    // Alert the copied text
-    alert("Copied the text: " + copyText.value);
-}
+
 // =========================================================================================
 // Function to show modal contain road description form
 //
 // Description:
 // Get road properties and then call mqtt connect
 // =========================================================================================
-
 function reportRoad(){
     // update row
     $('#modal-card').modal('show');
 
+    // display value
     document.getElementById('road-name').textContent = clickedRoad;
     document.getElementById('report-ticket').innerHTML = ``;
     document.getElementById('report-type').innerHTML = ``;
     document.getElementById('report-time').innerHTML = ``;
     document.getElementById('ticket-open-in-new-tab').innerHTML = ``;
 
+    // change this part with original image from user
     document.getElementById('road-img').innerHTML = `
         <img src="./assets/img/warning.png" style="height:200px">
     `;
 
+    // box for report description
     document.getElementById('description-form').innerHTML = `
         <label class="form-label form-key">Deskripsi kerusakan</label>
         <textarea class="form-control" id="laporDesc" rows="3" placeholder="Isikan deskripsi kerusakan jalan di sini"></textarea>
     `;
 
+    // use user key to lock the report. only original reporter can update it's report status
     document.getElementById('keyword-form').innerHTML = `
         <label for="keywordform" class="form-label form-key">Kata Kunci</label>
-        <input class="form-control" id="laporKey" placeholder="Kata yang mudah Anda hapal">
+        <input class="form-control" id="report-key" placeholder="Kata yang mudah Anda hapal">
     `;
 
+    // submit button
     document.getElementById('footer_button').innerHTML = `
         <button type="button" class="btn btn-success" onclick="report()">Laporkan</button>
     `;
 }
+
+
+
+
+
+
+
+
 
 // =========================================================================================
 // Damaged Road Report
@@ -87,7 +86,7 @@ function reportRoad(){
 // =========================================================================================
 function report(){
     let reportDescription = document.getElementById('laporDesc').value;
-    userKeyword = document.getElementById('laporKey').value;
+    userKeyword = document.getElementById('report-key').value;
 
     // Calculate userKeyword Hash
     let userKeywordHash = CryptoJS.SHA3(userKeyword, {outputLength: 256}).toString(CryptoJS.enc.Hex);
@@ -95,66 +94,48 @@ function report(){
     // Create special JSON format
     productJSON = "{'type':'report','issuer':'"+issuer+"','roadName':'"+clickedRoad+"','lat':'"+clickedLatitude+"','long':'"+clickedLongitude+"','desc':'"+reportDescription+"','hashKey':'"+userKeywordHash+"'}";
     
-    //Connect Websocket 
-    wsConnect();
-}
-
-// =========================================================================================
-// Road Fixing Report
-//
-// Description:
-// Get road properties and then call mqtt connect
-// =========================================================================================
-
-function report_fixing(){
-    let roadName = clickedRoad;
-    let mainTicket = document.getElementById('report-ticket').textContent;
-    let reportLat = clickedLatitude;
-    let reportLong = clickedLongitude;
-    let reportDescription = document.getElementById('desc-detail').textContent;
-    userKeyword = document.getElementById('laporKey').value;
-
-    // Create special JSON format
-    productJSON = "{'type':'fixing','issuer':'"+issuer+"','ticket':'"+mainTicket+"','roadName':'"+roadName+"','lat':'"+reportLat+"','long':'"+reportLong+"','desc':'"+reportDescription+"','hashKey':'"+userHashKey+"'}";
+    // Send a message to the server
+    let inputMessage = "create/" + productJSON + '/'+ clientSocket + 'lapor';
+    socket.emit('submit', inputMessage);
     
-    //Connect websocket 
-    wsConnect();
-}
-
-// =========================================================================================
-// Finished Progress Report
-//
-// Description:
-// Get road properties and then call mqtt connect
-// =========================================================================================
-
-function report_finish(){
-    let roadName = clickedRoad;
-    let mainTicket = document.getElementById('report-ticket').textContent;
-    let reportLat = clickedLatitude;
-    let reportLong = clickedLongitude;
-    let reportDescription = document.getElementById('desc-detail').textContent;
-    userKeyword = document.getElementById('laporKey').value;
-
-    // Create special JSON format
-    productJSON = "{'type':'finish','issuer':'"+issuer+"','ticket':'"+mainTicket+"','roadName':'"+roadName+"','lat':'"+reportLat+"','long':'"+reportLong+"','desc':'"+reportDescription+"','hashKey':'"+userHashKey+"'}";
-    //Connect websocket 
-    wsConnect();
-}
-
-
-//======================================================================
-// Websocket Function
-//======================================================================
-
-// connect to websocket
-function wsConnect(){
+    // hide button
+    document.getElementById('footer_button').innerHTML = ``;
     document.getElementById("description-form").innerHTML=``;
     document.getElementById("keyword-form").innerHTML=``;
 
+    // change display
+    document.getElementById("description-form").innerHTML+=`
+        <div class="row textprimecolor">
+            <p>Sedang mengunggah laporan . . .</p>
+            <p>Harap menunggu. Biasanya memerlukan waktu 1-2 menit</p>
+        </div>
+    `;
+}
+
+// =========================================================================================
+// Update road status
+//
+// Description:
+// Update road report from 'report' to 'fixing' to 'finish'
+// =========================================================================================
+function update(ticket){
+    // read user keyword
+    userKeyword = document.getElementById('unlock-key').value;
+
     // Send a message to the server
-    let inputMessage = "data/" + productJSON + '/'+ clientSocket + 'lapor' + '/' + blockchainIndex + '/' + userKeyword;
+    let inputMessage = "update/" + ticket + '/'+ clientSocket + 'lapor' + '/' + userKeyword;
     socket.emit('submit', inputMessage);
+
+    // hide modal update
+    $('#modal-update').modal('hide');
+
+    // show modal card
+    $('#modal-card').modal('show');
+
+    // hide button
+    document.getElementById('footer_button').innerHTML = ``;
+    document.getElementById("description-form").innerHTML=``;
+    document.getElementById("keyword-form").innerHTML=``;
 
     // change display
     document.getElementById("description-form").innerHTML+=`
@@ -163,13 +144,13 @@ function wsConnect(){
             <p>Harap menunggu. Biasanya memerlukan waktu 1-2 menit</p>
         </div>
     `;
-
-    // hide button
-    document.getElementById('footer_button').innerHTML = ``;
 }
 
 
 
+
+
+// If get response from gateway core
 socket.on((clientSocket + 'lapor'), (msg) => {
     let response=msg;
 

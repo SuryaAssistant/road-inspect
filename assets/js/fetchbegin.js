@@ -11,49 +11,57 @@ function compareByTimestamp(a, b) {
     return 0;
 }
 
+function updateReport(ticket){
+    // hide modal card
+    $('#modal-card').modal('hide');
+
+    // change with modal update
+    $('#modal-update').modal('show');
+
+    // display ticket id
+    document.getElementById('unlock-report-ticket').innerHTML = `${ticket}`;
+
+    // reset form value
+    document.getElementById('unlock-key').value = '';
+
+    // button for update
+    document.getElementById('unlock-button').innerHTML = `
+        <button type="button" class="btn btn-success" onclick="update('${ticket}')">Laporkan Perbaikan</button>
+    `;
+}
+
 
 function updateCard(type, ticket, nameOfRoad, description_detail, reportTime){
+    document.getElementById('road-img').innerHTML = `
+        <img src="./assets/img/warning.png" style="height:200px">
+    `;
     document.getElementById('road-name').textContent = nameOfRoad;
     document.getElementById('report-ticket').innerHTML = `${ticket}`;
+    document.getElementById('ticket-open-in-new-tab').innerHTML = `
+        <a href="./laporan/info.html?tiket=${ticket}" target=_blank><i class='bx bx-link-external'></i></a>
+    `;
+    document.getElementById('report-time').innerHTML = `
+        <span class="badge bg-light text-dark">${reportTime}</span>
+    `;
     document.getElementById('description-form').innerHTML = `
         <p id="desc-detail">${description_detail}</p>
     `;
     document.getElementById('keyword-form').innerHTML = `
-        <input class="form-control" style="text-align: center;" id="laporKey" placeholder="Masukkan kata kunci">
     `;
-    document.getElementById('ticket-open-in-new-tab').innerHTML = `
-        <a href="./laporan/info.html?tiket=${ticket}" target=_blank><i class='bx bx-link-external'></i></a>
+    document.getElementById('footer_button').innerHTML = `
+        <button type="button" class="btn btn-success" onclick="updateReport('${ticket}')">Laporkan Perbaikan</button>
     `;
 
-    document.getElementById('road-img').innerHTML = `
-        <img src="./assets/img/warning.png" style="height:200px">
-    `;
+
 
     if(type == 'fixing'){
         document.getElementById('report-type').innerHTML = `
             <span class="badge bg-danger">Report</span>
-        `;
-        document.getElementById('report-time').innerHTML = `
-            <span class="badge bg-light text-dark">${reportTime}</span>
-        `;
-        document.getElementById('footer_button').innerHTML = `
-            <button type="button" class="btn btn-success" onclick="report_fixing()">Laporkan Perbaikan</button>
-        `;
-    }
-
+        `;}
     if(type == 'finish'){
         document.getElementById('report-type').innerHTML = `
             <span class="badge bg-warning">Fixing Process</span>
-        `;
-        document.getElementById('report-time').innerHTML = `
-            <span class="badge bg-light text-dark">${reportTime}</span>
-        `;
-        document.getElementById('footer_button').innerHTML = `
-            <button type="button" class="btn btn-success" onclick="report_finish()">Laporkan Selesai</button>
-        `;
-    }
-
-
+        `;}
 }
 
 
@@ -77,25 +85,11 @@ function getTimeDifference(timestampInSeconds) {
     // Prepare the result string based on time intervals
     var result = "";
     
-    if (seconds > 0){
-        result = seconds + " detik lalu";
-    }
-
-    if (minutes > 0){
-        result = minutes + " menit lalu";
-    }
-
-    if (hours > 0){
-        result = hours + " jam lalu";
-    }
-
-    if (days > 0) {
-        result = days + " hari lalu ";
-    }
-
-    if (months > 0) {
-        result = months + " bulan lalu ";
-    }
+    if (seconds > 0){result = seconds + " detik lalu";}
+    if (minutes > 0){result = minutes + " menit lalu";}
+    if (hours > 0){result = hours + " jam lalu";}
+    if (days > 0) {result = days + " hari lalu ";}
+    if (months > 0) {result = months + " bulan lalu ";}
 
     return result;
 }
@@ -118,7 +112,6 @@ socket.on('connect', () => {
     if(fetch_begin == false){
         // Send a message to the server
         let inputMessage = "resume/" + blockchainIndex + '/' + clientSocket + 'fetch';
-        var timestamp = new Date().getTime();
 
         // only fetch from blockchain every 5 minutes
         socket.emit('submit', inputMessage);
@@ -139,11 +132,6 @@ socket.on((clientSocket + 'fetch'), (blockchainReport) => {
         let lat = blockchainReport[i][1].message.data.lat;
         let long = blockchainReport[i][1].message.data.long;
         let desc_detail = blockchainReport[i][1].message.data.desc;
-        let msgHashKey = '';
-        if('hashKey' in blockchainReport[i][1].message.data){
-            msgHashKey = blockchainReport[i][1].message.data.hashKey;
-        }
-
 
         // Coordinates for the marker and colorize
         const markerCoords = [lat, long];
@@ -167,7 +155,6 @@ socket.on((clientSocket + 'fetch'), (blockchainReport) => {
             clickedLatitude = lat;
             clickedLongitude = long;
             clickedRoad = roadName;
-            userHashKey = msgHashKey;
 
             if(blockchainReport[i][1].message.data.type == 'report'){
                 updateCard('fixing', blockchainReport[i][0].msgID, roadName, desc_detail, timeDifferenceString)
